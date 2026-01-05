@@ -7,8 +7,9 @@ import roleRoutes from "./routes/role.routes";
 const app = express();
 
 app.use(morgan("dev"));
+app.use(express.json());
 
 app.use("/api/users", userRoutes);
-app.use("api/roles", roleRoutes);
+app.use("/api/roles", roleRoutes);
 
 export default app;
