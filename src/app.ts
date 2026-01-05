@@ -1,15 +1,14 @@
 import express from "express";
 import morgan from "morgan";
 
-import User from "./models/user.model";
-import Role from "./models/role.model";
+import userRoutes from "./routes/user.routes";
+import roleRoutes from "./routes/role.routes";
 
 const app = express();
 
 app.use(morgan("dev"));
 
-app.get("/about", (req, res) => {
-  res.send("Hello Users app");
-});
+app.use("/api/users", userRoutes);
+app.use("api/roles", roleRoutes);
 
 export default app;
