@@ -1,6 +1,30 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
-const AddressSchema = new Schema({
+export interface IPhone {
+  type: string;
+  number: string;
+}
+
+export interface IAddress {
+  area?: string;
+  street?: string;
+  number?: string;
+  po?: string;
+  municipality?: string;
+}
+
+export interface IUser extends Document {
+  username: string;
+  password: string;
+  firstname?: string;
+  lastname?: string;
+  email: string;
+  address?: IAddress;
+  phone?: IPhone[];
+  roles: Types.ObjectId[]
+}
+
+const AddressSchema = new Schema<IAddress>({
   area: String,
   street: String,
   number: String,
@@ -8,7 +32,7 @@ const AddressSchema = new Schema({
   municipality: String,
 });
 
-const PhoneSchema = new Schema(
+const PhoneSchema = new Schema<IPhone>(
   {
     type: String,
     number: String,
@@ -16,7 +40,7 @@ const PhoneSchema = new Schema(
   { _id: false }
 );
 
-const UserSchema = new Schema(
+const UserSchema = new Schema<IUser>(
   {
     username: {
       type: String,
@@ -36,13 +60,20 @@ const UserSchema = new Schema(
     email: {
       type: String,
       index: true,
+      required: [true, "Email is a required field"],
     },
     address: AddressSchema,
     phone: {
       type: [PhoneSchema],
       null: true,
     },
-    roles: [{ type: Schema.Types.ObjectId, ref: "Role", required: true }],
+    roles: [
+      {
+        type: Types.ObjectId,
+        ref: "Role",
+        required: true,
+      },
+    ],
   },
   {
     collection: "users",
