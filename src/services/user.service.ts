@@ -40,3 +40,7 @@ export const updateUser = async(id: string, payload: Partial<IUser>) => {
   }
   return User.findByIdAndUpdate(id, payload, {new: true}).populate('roles');
 }
+
+export const deleteUser = async(id: string) => {
+  return User.findByIdAndDelete(id);
+}
