@@ -1,14 +1,24 @@
 import { Router } from "express";
 import * as roleCtrl from "../controllers/role.controller";
-import {validate } from "../middlewares/validate.middleware";
+import { validate } from "../middlewares/validate.middleware";
 import { validateObjectId } from "../middlewares/validate.objectId.middleware";
-import { createRoleSchema, updateRoleSchema } from "../validators/role.validator";
+import {
+  createRoleSchema,
+  updateRoleSchema,
+} from "../validators/role.validator";
+import { authenticate } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/", roleCtrl.list);
-router.post("/", validate(createRoleSchema), roleCtrl.create);
-router.put("/:id",validate(updateRoleSchema), validateObjectId('id'), roleCtrl.update);
-router.delete("/:id",validateObjectId('id'), roleCtrl.remove);
+router.get("/", authenticate, roleCtrl.list);
+router.post("/", authenticate, validate(createRoleSchema), roleCtrl.create);
+router.put(
+  "/:id",
+  authenticate,
+  validate(updateRoleSchema),
+  validateObjectId("id"),
+  roleCtrl.update
+);
+router.delete("/:id", authenticate, validateObjectId("id"), roleCtrl.remove);
 
 export default router;
