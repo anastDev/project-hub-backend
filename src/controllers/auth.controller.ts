@@ -14,6 +14,6 @@ export const login = async (
     }
     res.status(201).json({ token: result.token, user: result.user });
   } catch (err) {
-    res.status(401).json({ message: "Error in login", error: err });
+    return res.status(401).json({ message: "Error in login", error: err });
   }
 };

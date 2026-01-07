@@ -16,9 +16,9 @@ export const getOne = async(req: Request, res: Response, next: NextFunction) => 
     if (!result) {
       return res.status(404).json({message: "User not found!"}); 
     }
-    res.status(201).json()
+    res.status(201).json(result);
   } catch (err) {
-    res.status(401).json({"Error": err});
+     res.status(401).json({"Error": err});
   }
  }
 
@@ -36,7 +36,7 @@ export const update = async(req: Request, res: Response, next: NextFunction) => 
      const result = await userService.updateUser(req.params.id!, req.body);
      res.status(201).json(result);
   } catch (err) {
-    res.status(401).json({"Error": err});
+     res.status(401).json({"Error": err});
   }
 }
 
