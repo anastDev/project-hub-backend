@@ -9,8 +9,8 @@ const router = Router();
 
 router.get("/",authenticate , userCtrl.list);
 router.get("/:id",authenticate, userCtrl.getOne);
-router.post("/",authenticate, validate(createUserSchema), authenticate, userCtrl.create);
-router.put("/:id", authenticate, validate(updateUserSchema), validateObjectId('id'), authenticate, userCtrl.update);
+router.post("/",authenticate, validate(createUserSchema), userCtrl.create);
+router.put("/:id", authenticate, validate(updateUserSchema), validateObjectId('id'), userCtrl.update);
 router.delete("/:id", authenticate, validateObjectId('id'), userCtrl.remove);
 
 export default router;
