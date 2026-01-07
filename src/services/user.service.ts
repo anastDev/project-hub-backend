@@ -6,8 +6,12 @@ import { Types } from "mongoose";
 const SALT_ROUNDS = 10;
 
 export const findAllUsers = async () => {
-  return User.find().lean();
+  return User.find().populate('roles').lean();
 };
+
+export const findUserById = async(id: string) => {
+  return User.findById(id).populate("roles").lean();
+}
 
 export const createUser = async (payload: Partial<IUser>) => {
   if (payload.password) {
