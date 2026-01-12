@@ -4,7 +4,7 @@ import mongooseToSwagger from "mongoose-to-swagger";
 import { Express } from "express";
 import Role from "./models/role.model";
 import User from "./models/user.model";
-import { zodComponents} from "./validators/swagger/zod.registry";
+import { zodComponents } from "./validators/swagger/zod.registry";
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -14,7 +14,7 @@ const options: swaggerJSDoc.Options = {
       version: "1.0.0",
       description: "API documentation",
     },
-    server: [
+    servers: [
       {
         url: "http://localhost:3000/api",
         description: "Local Server",
@@ -37,6 +37,19 @@ const options: swaggerJSDoc.Options = {
           properties: {
             message: { type: "string" },
             code: { type: "string" },
+          },
+        },
+        LoginResponse: {
+          type: Object,
+          properties: {
+            user: {
+              $ref: "#/components/schemas/User",
+            },
+            token: {
+              type: "string",
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            },
+            expiresIn: { type: "integer", example: 3600 },
           },
         },
       },
@@ -96,6 +109,13 @@ const options: swaggerJSDoc.Options = {
                   value: {
                     message: "Invalid or expired authentication token",
                     code: "UNAUTHORIZED",
+                  },
+                },
+                invalidCredentials: {
+                  summary: "Invalid credentials",
+                  value: {
+                    message: "Invalid email or password",
+                    code: "INVALID_CREDENTIALS",
                   },
                 },
               },
