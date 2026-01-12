@@ -2,93 +2,14 @@ import { Router } from "express";
 import * as userCtrl from "../controllers/user.controller";
 import { validate } from "../middlewares/validate.middleware";
 import { validateObjectId } from "../middlewares/validate.objectId.middleware";
-import { createUserSchema, updateUserSchema } from "../validators/user.validator";
+import {
+  createUserSchema,
+  updateUserSchema,
+} from "../validators/user.validator";
 import { authenticate } from "../middlewares/auth.middleware";
 import { hasAdminRole } from "../middlewares/user.middleware";
 
 const router = Router();
-
-/**
- * @openapi
- * components:
- *   schemas:
- *     ErrorResponse:
- *       type: object
- *       properties:
- *         message:
- *           type: string
- *           example: "General Error"
- *         code:
- *           type: string
- *           example: "ERROR_CODE"
- * 
- *   responses:
- *     UnauthorizedError:
- *       description: |
- *         **401 Unauthorized**
- *         Authentication token is missing, invalid or expired.
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/ErrorResponse"
- *           examples:
- *             missingToken:
- *               summary: Missing authentication token
- *               value:
- *                 message: "Authentication token is required"
- *                 code: "UNAUTHORIZED"
- *             invalidToken:
- *               summary: Invalid or expired token
- *               value:
- *                 message: "Invalid or expired authentication token"
- *                 code: "UNAUTHORIZED"
- * 
- *     ForbiddenError:
- *       description: |
- *         **403 Forbidden**
- *         Authenticated user does not have admin privileges.
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/ErrorResponse"
- *           examples:
- *             adminRequired:
- *               summary: Admin role required
- *               value:
- *                 message: "Admin role required to access this resource"
- *                 code: "FORBIDDEN"
- * 
- *     DatabaseError:
- *       description: |
- *         **503 Service Unavailable**
- *         Database service is temporarily unavailable.
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/ErrorResponse"
- *           examples:
- *             dbConnectionIssue:
- *               summary: Database connection issue
- *               value:
- *                 message: "Database Connection Issue"
- *                 code: "DATABASE_UNAVAILABLE"
- * 
- *     InternalServerError:
- *       description: |
- *         **500 Internal Server Error**
- *         An unexpected error occurred on the server.
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/ErrorResponse"
- *           examples:
- *             genericError:
- *               summary: Generic server error
- *               value:
- *                 message: "Internal Server Error"
- *                 code: "INTERNAL_SERVER_ERROR"
- */
-
 
 /**
  * @openapi
@@ -102,7 +23,7 @@ const router = Router();
  *       - Users
  *     security:
  *       - bearerAuth: []
- * 
+ *
  *     responses:
  *       "200":
  *         description: Successful response
@@ -113,24 +34,215 @@ const router = Router();
  *               items:
  *                 $ref: "#/components/schemas/User"
  *       "401":
+ *          $ref: "#/components/responses/UnauthorizedError"
+ *
+ *       "403":
+ *          $ref: "#/components/responses/ForbiddenError"
+ *
+ *       "500":
+ *          $ref: "#/components/responses/InternalServerError"
+ *
+ *       "503":
+ *          $ref: "#/components/responses/DatabaseError"
+ *
+ */
+router.get("/", authenticate, hasAdminRole, userCtrl.list);
+
+/**
+ * @openapi
+ * /users/{id}:
+ *   get:
+ *     summary: Gets a user by ID
+ *     description: |
+ *      Get detailed information about a single user.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *
+ *     responses:
+ *       "200":
+ *         description: Successful Response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/User"
+ *
+ *       "401":
+ *          $ref: "#/components/responses/UnauthorizedError"
+ *
+ *       "404":
+ *          $ref: "#/components/responses/UserNotFound"
+ */
+router.get("/:id", authenticate, userCtrl.getOne);
+
+/**
+ * @openapi
+ *  /users:
+ *    post:
+ *      summary: Creates new User
+ *      description: |
+ *        Create a new user account. Username (min 3 characters) and email must be unique.
+ *        Password must be at least 5 characters.
+ *      tags:
+ *        - Users
+ *      security:
+ *        - bearerAuth: []
+ *
+ *      requestBody:
+ *        required: true
+ *        description: User data for registration
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/CreateUser"
+ *
+ *      responses:
+ *        "201":
+ *          description: Created
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: "#/components/schemas/User"
+ *
+ *        "400":
+ *          $ref: "#/components/responses/BadRequestError"
+ *
+ *        "401":
+ *          $ref: "#/components/responses/UnauthorizedError"
+ *
+ *        "500":
+ *          $ref: "#/components/responses/InternalServerError"
+ *
+ */
+router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
+
+/**
+ * @openapi
+ * /users/{id}:
+ *   put:
+ *     summary: Updates a user by ID
+ *     description: Update an existing user's information. Supports partial updates.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ * 
+ *     requestBody:
+ *       description: User data to update
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/UpdateUser"
+ * 
+ *     responses:
+ *       "200":
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/User"
+ * 
+ *       "400":
+ *         $ref: "#/components/responses/BadRequestError"
+ * 
+ *       "401":
  *         $ref: "#/components/responses/UnauthorizedError"
  * 
  *       "403":
- *         $ref: "#/components/responses/ForbiddenError"
+ *         description: Forbidden - Cannot update another user's profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ResponseError"
+ *             example:
+ *               message: "You can only update your own profile"
+ *               code: "FORBIDDEN"
+ *       "404":
+ *         $ref: "#/components/responses/UserNotFound"
+ * 
+ *       "409":
+ *         description: Conflict - Email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ResponseError"
+ *             example:
+ *               message: "Email already exists"
+ *               code: "DUPLICATE_EMAIL"
  * 
  *       "500":
  *         $ref: "#/components/responses/InternalServerError"
- * 
- *       "503":
- *         $ref: "#/components/responses/DatabaseError"
  */
-router.get("/",authenticate, hasAdminRole, userCtrl.list);
+router.put(
+  "/:id",
+  authenticate,
+  validate(updateUserSchema),
+  validateObjectId("id"),
+  userCtrl.update
+);
 
-
-router.get("/:id",authenticate, userCtrl.getOne);
-
-router.post("/",authenticate, validate(createUserSchema), userCtrl.create);
-router.put("/:id", authenticate, validate(updateUserSchema), validateObjectId('id'), userCtrl.update);
-router.delete("/:id", authenticate, hasAdminRole, validateObjectId('id'), userCtrl.remove);
+/**
+ * @openapi
+ *  /users/{id}:
+ *    delete:
+ *      summary: Delete a user by ID (Admin only)
+ *      description: |
+ *        Permanently remove a user. Only the admin can delete any account. 
+ *      tags:
+ *        - Users
+ *      security: 
+ *        - bearerAuth: []
+ * 
+ *      parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ * 
+ *      responses: 
+ *        "204": 
+ *          description: User successfully deleted.
+ *          headers:
+ *            X-Deleted-User-Id:
+ *              description: ID of the deleted user
+ *              schema:
+ *                type: string    
+ * 
+ *        "401":
+ *          $ref: "#/components/responses/UnauthorizedError"
+ * 
+ *        "403":
+ *          $ref: "#/components/responses/ForbiddenError"
+ * 
+ *        "404":
+ *          $ref: "#/components/responses/UserNotFound"
+ * 
+ *        "500":
+ *          $ref: "#/components/responses/InternalServerError" 
+ */
+router.delete(
+  "/:id",
+  authenticate,
+  hasAdminRole,
+  validateObjectId("id"),
+  userCtrl.remove
+);
 
 export default router;
