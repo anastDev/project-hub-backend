@@ -39,11 +39,6 @@ const router = Router();
  *       "403":
  *          $ref: "#/components/responses/ForbiddenError"
  *
- *       "500":
- *          $ref: "#/components/responses/InternalServerError"
- *
- *       "503":
- *          $ref: "#/components/responses/DatabaseError"
  *
  */
 router.get("/", authenticate, hasAdminRole, userCtrl.list);
@@ -118,9 +113,6 @@ router.get("/:id", authenticate, userCtrl.getOne);
  *        "401":
  *          $ref: "#/components/responses/UnauthorizedError"
  *
- *        "500":
- *          $ref: "#/components/responses/InternalServerError"
- *
  */
 router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
 
@@ -163,30 +155,9 @@ router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
  *       "401":
  *         $ref: "#/components/responses/UnauthorizedError"
  * 
- *       "403":
- *         description: Forbidden - Cannot update another user's profile
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/ResponseError"
- *             example:
- *               message: "You can only update your own profile"
- *               code: "FORBIDDEN"
  *       "404":
  *         $ref: "#/components/responses/UserNotFound"
  * 
- *       "409":
- *         description: Conflict - Email already exists
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/ResponseError"
- *             example:
- *               message: "Email already exists"
- *               code: "DUPLICATE_EMAIL"
- * 
- *       "500":
- *         $ref: "#/components/responses/InternalServerError"
  */
 router.put(
   "/:id",
@@ -234,8 +205,6 @@ router.put(
  *        "404":
  *          $ref: "#/components/responses/UserNotFound"
  * 
- *        "500":
- *          $ref: "#/components/responses/InternalServerError" 
  */
 router.delete(
   "/:id",
