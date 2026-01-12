@@ -1,60 +1,72 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../services/user.service";
 
-export const list = async(req: Request, res: Response, next: NextFunction) => {
+export const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await userService.findAllUsers(); 
+    const result = await userService.findAllUsers();
     res.status(200).json(result);
   } catch (err: any) {
-    if (err.code === 89) {
-      return res.status(503).json({
-        message: "Database Connection Issue",
-        code: "DATABASE_UNAVAILABLE"
-      })
-    }
-
-    return res.status(500).json({
-      message: "Internal Server Error",
-      code: "INTERNAL_SERVER_ERROR"
-    })
+    next(err);
   }
-}
+};
 
-export const getOne = async(req: Request, res: Response, next: NextFunction) => {
+export const getOne = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const result = await userService.findUserById(req.params.id!);
+    const userId = req.params.id!;
+    const result = await userService.findUserById(userId);
     if (!result) {
-      return res.status(404).json({message: "User not found"}); 
+      return res.status(404).json({
+        message: `User with ID ${userId} not found`,
+        code: "UNAUTHORIZED",
+        userId: userId,
+      });
     }
     res.status(200).json(result);
   } catch (err) {
-     res.status(401).json({"Error": err});
+    next(err);
   }
- }
+};
 
-export const create = async(req: Request, res: Response, next: NextFunction) => {
+export const create = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const result = await userService.createUser(req.body);
     res.status(201).json(result);
   } catch (err) {
-    res.status(401).json({"Error": err});
+    next(err);
   }
-}
+};
 
-export const update = async(req: Request, res: Response, next: NextFunction) => {
+export const update = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-     const result = await userService.updateUser(req.params.id!, req.body);
-     res.status(201).json(result);
+    const result = await userService.updateUser(req.params.id!, req.body);
+    res.status(200).json(result);
   } catch (err) {
-     res.status(401).json({"Error": err});
+    next(err);
   }
-}
+};
 
-export const remove = async(req: Request, res: Response, next: NextFunction) => {
+export const remove = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const result = await userService.deleteUser(req.params.id!);
-    res.status(201).json(result);
-  } catch(err) {
-    res.status(401).json({"Error": err});
+    const userId = req.params.id!;
+    const result = await userService.deleteUser(userId);
+    res.set("X-Deleted-User-Id", userId).status(204).send();
+  } catch (err: any) {
+    next(err);
   }
-}
+};
