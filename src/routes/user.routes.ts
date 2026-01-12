@@ -64,7 +64,7 @@ router.get("/", authenticate, hasAdminRole, userCtrl.list);
  *
  *     responses:
  *       "200":
- *         description: Successful Response
+ *         description: Successful response
  *         content:
  *           application/json:
  *             schema:
@@ -105,7 +105,7 @@ router.get("/:id", authenticate, userCtrl.getOne);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: "#/components/schemas/User"
+ *               $ref: "#/components/schemas/User"
  *
  *        "400":
  *          $ref: "#/components/responses/BadRequestError"
