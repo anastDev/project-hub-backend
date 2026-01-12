@@ -4,7 +4,7 @@ import mongooseToSwagger from "mongoose-to-swagger";
 import { Express } from "express";
 import Role from "./models/role.model";
 import User from "./models/user.model";
-import { zodComponents } from "./validators/swagger/zod.registry";
+import { zodComponents} from "./validators/swagger/zod.registry";
 
 const options: swaggerJSDoc.Options = {
   definition: {
