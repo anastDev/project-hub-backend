@@ -5,7 +5,7 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await userService.findAllUsers();
     res.status(200).json(result);
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 };
@@ -66,7 +66,7 @@ export const remove = async (
     const userId = req.params.id!;
     const result = await userService.deleteUser(userId);
     res.set("X-Deleted-User-Id", userId).status(204).send();
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 };
