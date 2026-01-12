@@ -5,7 +5,7 @@ import userRoutes from "./routes/user.routes";
 import roleRoutes from "./routes/role.routes";
 import authRoutes from "./routes/auth.routes";
 
-import { setupSwagger } from "./swagger";
+import { setupSwagger } from "../swagger";
 
 const app = express();
 
