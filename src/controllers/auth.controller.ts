@@ -10,10 +10,12 @@ export const login = async (
     const { username, password } = req.body;
     const result = await authService.login(username, password);
     if (!result) {
-      return res.status(401).json({ message: "Invalid Credentials" });
+      return res
+        .status(401)
+        .json({ message: "Invalid Credentials", code: "INVALID_CREDENTIALS" });
     }
     res.status(201).json({ token: result.token, user: result.user });
   } catch (err) {
-    return res.status(401).json({ message: "Error in login", error: err });
+    next(err);
   }
 };
