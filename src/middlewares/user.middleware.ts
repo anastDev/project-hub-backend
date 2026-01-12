@@ -12,10 +12,9 @@ export const hasAdminRole = (
     );
     if (!checkAdminRole) {
       console.log("Forbidden: Insufficient permissions");
-      res.status(403).json({ message: "Forbidden: Insufficient permissions" });
+      res.status(403).json({ message: "Forbidden: Insufficient permissions", code: "FORBIDDEN" });
     }
   } catch (err) {
-    res.status(401).json({ message: "Not Admin Role" });
+    res.status(403).json({ message: "Admin Role Required", code: "FORBIDDEN" });
   }
 };
-
