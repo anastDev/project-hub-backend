@@ -27,7 +27,7 @@ export const authenticate = (
   }
 
   const token = header.split(" ")[1];
-  console.log("Token >>>", token);
+  // console.log("Token >>>", token);
 
   if (!token) {
     return res
@@ -38,7 +38,7 @@ export const authenticate = (
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     req.user = payload;
-    console.log("User", req.user);
+    // console.log("User", req.user);
     next();
   } catch (err) {
     res
