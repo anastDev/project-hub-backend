@@ -76,7 +76,7 @@ router.get("/", authenticate, hasAdminRole, userCtrl.list);
  *       "404":
  *          $ref: "#/components/responses/UserNotFound"
  */
-router.get("/:id", authenticate, userCtrl.getOne);
+router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
 
 /**
  * @openapi

@@ -5,6 +5,10 @@ export const validateObjectId =
   (params: "id") => (req: Request, res: Response, next: NextFunction) => {
     const value = req.params[params];
     if (!value || !mongoose.Types.ObjectId.isValid(value)) {
-      return res.status(400).json({ message: "Not valid ObjectId" });
+      return res
+        .status(400)
+        .json({ message: "Not a valid ObjectId", code: "NON_VALID_ID" });
     }
+
+    next();
   };
