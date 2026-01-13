@@ -7,7 +7,7 @@ const router = Router();
 
 /**
  * @openapi
- *   /login:
+ *  /auth/login:
  *    post:
  *      summary: Login user
  *      tags: 
