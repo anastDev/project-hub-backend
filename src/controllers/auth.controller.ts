@@ -14,7 +14,7 @@ export const login = async (
         .status(401)
         .json({ message: "Invalid Credentials", code: "INVALID_CREDENTIALS" });
     }
-    res.status(201).json({ token: result.token, user: result.user });
+    res.status(200).json({ token: result.token, user: result.user });
   } catch (err) {
     next(err);
   }
