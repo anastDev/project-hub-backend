@@ -11,6 +11,9 @@ export const validate = (schema: ZodType<any>) => (req: Request, res: Response, 
     schema.parse(toValidate.body);
     next();
   } catch (err) {
-    return res.status(400).json({message: "Bad Request", code: "BAD_REQUEST"});
+    return res.status(400).json({
+      message: "Bad Request",
+      code: "BAD_REQUEST"
+    });
   }
 }
