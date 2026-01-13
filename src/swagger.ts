@@ -4,7 +4,7 @@ import mongooseToSwagger from "mongoose-to-swagger";
 import { Express } from "express";
 import Role from "./models/role.model";
 import User from "./models/user.model";
-import { zodComponents } from "./validators/swagger/zod.registry";
+import { zodComponents } from "./validators/zod-to-swagger/zod.registry";
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -42,14 +42,8 @@ const options: swaggerJSDoc.Options = {
         LoginResponse: {
           type: Object,
           properties: {
-            user: {
-              $ref: "#/components/schemas/User",
-            },
-            token: {
-              type: "string",
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-            },
-            expiresIn: { type: "integer", example: 3600 },
+          username: {type: "string", required: true},
+          password: {type: "string", required: true},
           },
         },
       },
