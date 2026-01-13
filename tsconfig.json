@@ -5,7 +5,7 @@
 
     "module": "nodenext",
     "target": "esnext",
-    "types": ["express", "node", "morgan"],
+    "types": ["express", "node", "morgan", "jest"],
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
