@@ -7,9 +7,9 @@ import { createRoleSchema, updateRoleSchema } from "../role.validator";
 
 const registry = new OpenAPIRegistry();
 
-export const CreateUserApi = registry.register("CreateUserSchema", createUserSchema);
+export const CreateUserApi = registry.register("CreateUser", createUserSchema);
 
-export const UpdateUserApi = registry.register("UpdateUserSchema", updateUserSchema);
+export const UpdateUserApi = registry.register("UpdateUser", updateUserSchema);
 
 export const CreateRoleApi = registry.register("CreateRole", createRoleSchema);
 
