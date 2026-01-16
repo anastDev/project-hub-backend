@@ -42,8 +42,8 @@ const options: swaggerJSDoc.Options = {
         LoginResponse: {
           type: Object,
           properties: {
-          username: {type: "string", required: true},
-          password: {type: "string", required: true},
+            username: { type: "string", required: true },
+            password: { type: "string", required: true },
           },
         },
       },
@@ -131,17 +131,57 @@ const options: swaggerJSDoc.Options = {
             },
           },
         },
-        UserNotFound: {
-          description: "404 User Not Found",
+        NotFound: {
+          description: "404 Not Found",
           content: {
             "application/json": {
               schema: {
                 $ref: "#/components/schemas/ResponseError",
               },
               example: {
-                message: "User with ID `123` not found",
-                error: "USER_NOT_FOUND",
-                userId: "123",
+                userNotFound: {
+                  summary: "User not found",
+                  value: {
+                    message: "User with ID `123` not found",
+                    error: "USER_NOT_FOUND",
+                    userId: "123",
+                  },
+                },
+                roleNotFound: {
+                  summary: "Role not found",
+                  value: {
+                    message: "Role with ID `123` not found",
+                    error: "USER_NOT_FOUND",
+                    userId: "123",
+                  },
+                },
+              },
+            },
+          },
+        },
+        Conflict: {
+          description:
+            "409 Conflict - request wasn't completed because of a conflict with the resource's current state",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ResponseError",
+              },
+              examples: {
+                userConflict: {
+                  summary: "Request not completed cause of conflict",
+                  value: {
+                    message: "User already exists",
+                    code: "CONFLICT",
+                  },
+                },
+                roleConflict: {
+                  summary: "Request not completed cause of conflict",
+                  value: {
+                    message: "Role already exists",
+                    code: "CONFLICT",
+                  },
+                },
               },
             },
           },

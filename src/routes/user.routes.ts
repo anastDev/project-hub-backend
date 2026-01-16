@@ -112,6 +112,9 @@ router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
  *
  *        "401":
  *          $ref: "#/components/responses/UnauthorizedError"
+ * 
+ *        "409":
+ *          $ref: "#components/responses/Conflict"
  *
  */
 router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
@@ -156,7 +159,8 @@ router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
  *         $ref: "#/components/responses/UnauthorizedError"
  * 
  *       "404":
- *         $ref: "#/components/responses/UserNotFound"
+ *         $ref: "#/components/responses/NotFound"
+ * 
  * 
  */
 router.put(
@@ -206,7 +210,7 @@ router.put(
  *          $ref: "#/components/responses/ForbiddenError"
  * 
  *        "404":
- *          $ref: "#/components/responses/UserNotFound"
+ *          $ref: "#/components/responses/NotFound"
  * 
  */
 router.delete(

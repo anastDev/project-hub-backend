@@ -72,6 +72,12 @@ router.get("/", authenticate, hasAdminRole, roleCtrl.list);
  *        "401":
  *          $ref: "#/components/responses/UnauthorizedError"
  * 
+ *        "403":
+ *          $ref: "#/components/responses/ForbiddenError"
+ * 
+ *        "409":
+ *          $ref: "#components/responses/Conflict"
+ * 
  */
 router.post("/", authenticate, hasAdminRole, validate(createRoleSchema), roleCtrl.create);
 
@@ -119,6 +125,12 @@ router.post("/", authenticate, hasAdminRole, validate(createRoleSchema), roleCtr
  * 
  *        "403":
  *          $ref: "#/components/responses/ForbiddenError"
+ * 
+ *        "404": 
+ *          $ref: "#/components/responses/NotFound"
+ * 
+ *        "409":
+ *          $ref: "#/components/responses/Conflict"
  * 
  */
 router.put(
@@ -168,7 +180,7 @@ router.put(
  *          $ref: "#/components/responses/UnauthorizedError"
  * 
  *        "404":
- *          $ref: "#/components/responses/UserNotFound"
+ *          $ref: "#/components/responses/NotFound"
  * 
  */
 router.delete(
