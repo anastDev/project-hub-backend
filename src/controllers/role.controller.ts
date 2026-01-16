@@ -16,7 +16,7 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    console.log(">>", req.body);
+    // console.log(">>", req.body);
     const result = await roleService.createRole(req.body);
     res.status(201).json(result);
   } catch (err) {
@@ -30,7 +30,7 @@ export const update = async (
   next: NextFunction
 ) => {
   try {
-    console.log(">>", req.params.id, req.body);
+    // console.log(">>", req.params.id, req.body);
     const result = await roleService.updateRole(req.params.id!, req.body);
     res.status(200).json(result);
   } catch (err) {
