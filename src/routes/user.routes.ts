@@ -194,7 +194,10 @@ router.put(
  *            X-Deleted-User-Id:
  *              description: ID of the deleted user
  *              schema:
- *                type: string    
+ *                type: string
+ * 
+ *        "400":
+ *          $ref: "#/components/responses/BadRequestError"    
  * 
  *        "401":
  *          $ref: "#/components/responses/UnauthorizedError"
