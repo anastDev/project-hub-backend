@@ -24,7 +24,6 @@ export const createUserSchema = z.object({
   email: z.email(),
   address: addressSchema.optional(),
   phone: z.array(phoneSchema).optional(),
-  roles: z.array(z.string()).optional(),
 });
 
 export const updateUserSchema = createUserSchema.partial();

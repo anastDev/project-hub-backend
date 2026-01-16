@@ -27,9 +27,7 @@ export const createUser = async (payload: Partial<IUser>) => {
       active: true,
     });
   }
-  let roleIds: Types.ObjectId[] = [];
-  roleIds = [reader?._id];
-  const user = new User({...payload, roles: roleIds});
+  const user = new User({...payload, roles: reader});
   return user.save();
 };
 

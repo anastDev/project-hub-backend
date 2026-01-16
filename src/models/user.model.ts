@@ -13,16 +13,6 @@ export interface IAddress {
   municipality?: string;
 }
 
-export interface IUser extends Document {
-  username: string;
-  password: string;
-  firstname?: string;
-  lastname?: string;
-  email: string;
-  address?: IAddress;
-  phone?: IPhone[];
-  roles: Types.ObjectId[]
-}
 
 const AddressSchema = new Schema<IAddress>({
   area: String,
@@ -36,6 +26,40 @@ const PhoneSchema = new Schema<IPhone>(
   {
     type: String,
     number: String,
+  },
+  { _id: false }
+);
+
+export interface IUserRole {
+  role: string;
+  description?: string;
+  active?: boolean;
+}
+
+export interface IUser extends Document {
+  username: string;
+  password: string;
+  firstname?: string;
+  lastname?: string;
+  email: string;
+  address?: IAddress;
+  phone?: IPhone[];
+  roles: IUserRole[]
+}
+
+const UserRoleSchema = new Schema<IUserRole>(
+  {
+    role: { 
+      type: String, 
+      required: true 
+    },
+    description: { 
+      type: String 
+    },
+    active: { 
+      type: Boolean, 
+      default: true 
+    }
   },
   { _id: false }
 );
@@ -69,9 +93,9 @@ const UserSchema = new Schema<IUser>(
     },
     roles: [
       {
-        type: Types.ObjectId,
-        ref: "Role",
+        type: [UserRoleSchema],
         required: true,
+        default: [{role: "READER", active: true}]
       },
     ],
   },
