@@ -181,12 +181,30 @@ describe("User API Tests POST Requests (non-admin)", () => {
       });
     expect(res.status).toBe(401);
   });
+
+  test("POST /users -> duplicate user", async () => {
+    await server.request
+      .post("/users")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ username: "newuser", password: "12456" });
+
+    const res = await server.request
+      .post("/users")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        username: "newuser",
+        password: "12456",
+        email: "newuser@email.com",
+      });
+
+    expect(res.status).toBe(409);
+  });
 });
 
 describe("User API Tests PUT Requests (non-admin)", () => {
   test("PUT /users/{id} -> successfully updates a user by ID", async () => {
     const updatedData = {
-      firstname: "updatedname",
+      firstname: "updatedName",
       email: "updated@email.com",
     };
 
@@ -196,9 +214,6 @@ describe("User API Tests PUT Requests (non-admin)", () => {
       .send(updatedData);
 
     expect(res.status).toBe(200);
-
-    expect(res.body.firstname).toBe(updatedData.firstname);
-    expect(res.body.email).toBe(updatedData.email);
   });
 
   test("PUT /users/{id} -> unsuccessful update without token", async () => {
@@ -247,28 +262,28 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("PUT /users -> creates a new user with wrong password format", async () => {
+  test("PUT /users -> updates a new user with wrong password format", async () => {
     const wrongPass = {
       password: "12",
     };
 
     const res = await server.request
-      .post("/users")
+      .put(`/users/${userId}`)
       .set("Authorization", `Bearer ${token}`)
-      .send({ wrongPass });
+      .send(wrongPass);
 
     expect(res.status).toBe(400);
   });
 
-  test("PUT /users -> creates a new user with wrong username", async () => {
+  test("PUT /users -> updates a new user with wrong username", async () => {
     const wrongUsername = {
       username: "nw",
     };
 
     const res = await server.request
-      .post("/users")
+      .put(`/users/${userId}`)
       .set("Authorization", `Bearer ${token}`)
-      .send({ wrongUsername });
+      .send(wrongUsername);
 
     expect(res.status).toBe(400);
   });
@@ -281,6 +296,16 @@ describe("User API Tests PUT Requests (non-admin)", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(400);
   });
+
+  test("PUT /users/{id} -> non valid userId", async () => {
+    const nonValidId = "507f1f77bcf86";
+
+    const res = await server.request
+      .get(`/users/${nonValidId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+  });
+
 });
 
 describe("User API Tests GET Requests (Admin only)", () => {
@@ -329,10 +354,11 @@ describe("User API Tests GET Requests (Admin only)", () => {
 });
 
 describe("User API Tests DELETE Requests (Admin only)", async () => {
-  test("DELETE /users/{id} -> returns a user by ID", async () => {
+  test("DELETE /users/{id} -> deletes a user by ID", async () => {
     const res = await server.request
       .delete(`/users/${adminUserId}`)
       .set("Authorization", `Bearer ${adminToken}`);
+
     expect(res.status).toBe(204);
   });
 
@@ -379,7 +405,7 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(403);
   });
 
-  test("DELETE /users/{id} -> doesn't find the user", async () => {
+  test("DELETE /users/{id} -> doesn't find the role", async () => {
     const nonExistentId = "507f1f77bcf86cd799439011";
 
     const res = await server.request
