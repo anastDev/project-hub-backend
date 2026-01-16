@@ -7,18 +7,18 @@ export const hasAdminRole = (
   next: NextFunction
 ) => {
   try {
-    const checkAdminRole = req.user.roles.some(
+    const checkAdminRole = req.user.roles.filter(
       (r: IRole) => r.role == "ADMIN" && r.active
     );
     if (!checkAdminRole) {
-      console.log("Forbidden: Insufficient permissions");
-      res.status(403).json({
+      return res.status(403).json({
         message: "Forbidden: Insufficient permissions",
         code: "FORBIDDEN",
       });
     }
+    next();
   } catch (err) {
-    res.status(403).json({
+    return res.status(403).json({
       message: "Admin Role Required",
       code: "FORBIDDEN",
     });

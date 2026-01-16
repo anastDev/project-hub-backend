@@ -64,6 +64,14 @@ export const remove = async (
 ) => {
   try {
     const userId = req.params.id!;
+    const existingUser = await userService.findUserById(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        message: `User with ID ${userId} not found`,
+        code: "UNAUTHORIZED",
+        userId: userId,
+      });
+    }
     const result = await userService.deleteUser(userId);
     res.set("X-Deleted-User-Id", userId).status(204).send();
   } catch (err) {

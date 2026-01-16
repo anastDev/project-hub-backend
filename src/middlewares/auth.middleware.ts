@@ -41,7 +41,7 @@ export const authenticate = (
     // console.log("User", req.user);
     next();
   } catch (err) {
-    res
+    return res
       .status(401)
       .json({ message: "Invalid or expired token", code: "UNAUTHORIZED" });
   }
