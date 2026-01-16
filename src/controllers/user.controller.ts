@@ -37,6 +37,16 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
+    const { username, email } = req.body;
+    const existingUser = await userService.findUserByUsernameOrEmail(username, email);
+    if (existingUser) {
+      const conflictField = existingUser.email === email ? "email" : "username";
+      return res.status(409).json({
+        message: `User with ${conflictField} already exists`,
+        code: "CONFLICT",
+      });
+    }
+
     const result = await userService.createUser(req.body);
     res.status(201).json(result);
   } catch (err) {
@@ -50,7 +60,18 @@ export const update = async (
   next: NextFunction
 ) => {
   try {
-    const result = await userService.updateUser(req.params.id!, req.body);
+    const userId = req.params.id!;
+    const updatedData = req.body;
+
+    const existingUser = await userService.findUserById(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        message: `User with ID ${userId} not found`,
+        code: "NOT_FOUND"
+      });
+    }
+
+    const result = await userService.updateUser(userId, updatedData);
     res.status(200).json(result);
   } catch (err) {
     next(err);
