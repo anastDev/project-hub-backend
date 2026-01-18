@@ -41,7 +41,7 @@ const router = Router();
  *
  *
  */
-router.get("/", authenticate, hasAdminRole, userCtrl.list);
+router.get("/", authenticate, userCtrl.list);
 
 /**
  * @openapi
