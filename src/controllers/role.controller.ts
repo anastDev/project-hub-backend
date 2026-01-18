@@ -16,7 +16,6 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    // console.log(">>", req.body);
     const { role } = req.body;
 
     const existingRole = await roleService.findRoleByName(role);
@@ -39,7 +38,6 @@ export const update = async (
   next: NextFunction
 ) => {
   try {
-    // console.log(">>", req.params.id, req.body);
     const roleId = req.params.id!;
     const updateData = req.body;
 
@@ -50,17 +48,7 @@ export const update = async (
         code: "NOT_FOUND",
       });
     }
-
-    if (updateData.role && updateData.role !== existingRole.role) {
-      const duplicateRole = await roleService.findRoleByName(updateData.role);
-      if (duplicateRole) {
-        return res.status(409).json({
-          message: `Role '${updateData.role}' already exists`,
-          code: "CONFLICT",
-        });
-      }
-    }
-    const result = await roleService.updateRole(req.params.id!, req.body);
+    const result = await roleService.updateRole(roleId, updateData);
     res.status(200).json(result);
   } catch (err) {
     next(err);
