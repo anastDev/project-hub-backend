@@ -49,7 +49,7 @@ router.get("/", authenticate, hasAdminRole, userCtrl.list);
  *   get:
  *     summary: Gets a user by ID
  *     description: |
- *      Get detailed information about a single user.
+ *       Get detailed information about a single user.
  *     tags:
  *       - Users
  *     security:
@@ -69,15 +69,15 @@ router.get("/", authenticate, hasAdminRole, userCtrl.list);
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/User"
- * 
- *      "400":
- *        $ref: "#/components/responses/BadRequestError"
+ *
+ *       "400":
+ *         $ref: "#/components/responses/BadRequestError"
  *
  *       "401":
- *          $ref: "#/components/responses/UnauthorizedError"
+ *         $ref: "#/components/responses/UnauthorizedError"
  *
  *       "404":
- *          $ref: "#/components/responses/UserNotFound"
+ *         $ref: "#/components/responses/UserNotFound"
  */
 router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
 
