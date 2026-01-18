@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { describe } from "node:test";
+import mongoose from "mongoose";
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
@@ -73,8 +74,8 @@ afterAll(async () => {
   await server.stop();
 });
 
-describe("User API Tests GET Requests (non-admin)", () => {
-  test("GET /users/{id} -> returns a user by ID", async () => {
+describe("User API – GET requests (non-admin access)", () => {
+  test("GET /users/{id} -> returns the authenticated user by id", async () => {
     const res = await server.request
       .get(`/users/${userId}`)
       .set("Authorization", `Bearer ${token}`);
@@ -82,16 +83,7 @@ describe("User API Tests GET Requests (non-admin)", () => {
     expect(res.body._id.toString()).toBe(userId);
   });
 
-  test("GET /users/{id} -> doesn't find the user", async () => {
-    const nonExistentId = "507f1f77bcf86cd799439011";
-
-    const res = await server.request
-      .get(`/users/${nonExistentId}`)
-      .set("Authorization", `Bearer ${token}`);
-    expect(res.status).toBe(404);
-  });
-
-  test("GET /users/{id} -> doesn't have a valid objectId", async () => {
+  test("GET /users/{id} -> fails with 400 when user id format is invalid", async () => {
     const nonValidId = "507f1f77bcf86";
 
     const res = await server.request
@@ -99,10 +91,45 @@ describe("User API Tests GET Requests (non-admin)", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(400);
   });
+
+  test("GET /users/{id} -> fails with 401 when token is invalid", async () => {
+    const res = await server.request
+      .get(`/users/${userId}`)
+      .set("Authorization", `Bearer not a valid token`);
+
+    expect(res.status).toBe(401);
+  });
+
+  test("GET /users/{id} -> fails with 401 when token is expired", async () => {
+    const expiredPayload = {
+      username: "testuser",
+      password: "123456",
+      email: "testUser@email.com",
+    };
+
+    const expiredToken = jwt.sign(expiredPayload, JWT_SECRET, {
+      expiresIn: "-1h",
+    });
+
+    const res = await server.request
+      .get(`/users/${userId}`)
+      .set("Authorization", `Bearer ${expiredToken}`);
+
+    expect(res.status).toBe(401);
+  });
+
+  test("GET /users/{id} -> fails with 404 when user does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId().toString();
+
+    const res = await server.request
+      .get(`/users/${nonExistentId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
 });
 
-describe("User API Tests POST Requests (non-admin)", () => {
-  test("POST /users -> creates a new user", async () => {
+describe("User API – POST requests (non-admin access)", () => {
+  test("POST /users -> creates a new user successfully", async () => {
     const res = await server.request
       .post("/users")
       .set("Authorization", `Bearer ${token}`)
@@ -116,7 +143,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.body.username).toBe("newuser");
   });
 
-  test("POST /users -> creates a new user with wrong password", async () => {
+  test("POST /users -> fails with 400 when password format is invalid", async () => {
     const res = await server.request
       .post("/users")
       .set("Authorization", `Bearer ${token}`)
@@ -129,7 +156,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("POST /users -> creates a new user with wrong username", async () => {
+  test("POST /users -> fails with 400 when username format is invalid", async () => {
     const res = await server.request
       .post("/users")
       .set("Authorization", `Bearer ${token}`)
@@ -138,7 +165,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("POST /users -> creates a new user without email", async () => {
+  test("POST /users -> fails with 400 when email is missing", async () => {
     const res = await server.request
       .post("/users")
       .set("Authorization", `Bearer ${token}`)
@@ -147,7 +174,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("POST /users -> creates a new user with invalid token", async () => {
+  test("POST /users -> fails with 401 when token is invalid", async () => {
     const res = await server.request
       .post("/users")
       .set("Authorization", `Bearer not a valid token`)
@@ -160,7 +187,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("POST /users -> creates a new user with expired token", async () => {
+  test("POST /users -> fails with 401 when token is expired", async () => {
     const expiredPayload = {
       username: "testuser",
       password: "123456",
@@ -182,7 +209,7 @@ describe("User API Tests POST Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("POST /users -> duplicate user", async () => {
+  test("POST /users -> fails with 409 when user already exists", async () => {
     await server.request
       .post("/users")
       .set("Authorization", `Bearer ${token}`)
@@ -201,8 +228,8 @@ describe("User API Tests POST Requests (non-admin)", () => {
   });
 });
 
-describe("User API Tests PUT Requests (non-admin)", () => {
-  test("PUT /users/{id} -> successfully updates a user by ID", async () => {
+describe("User API – PUT requests (non-admin access)", () => {
+  test("PUT /users/{id} -> updates user data successfully", async () => {
     const updatedData = {
       firstname: "updatedName",
       email: "updated@email.com",
@@ -216,7 +243,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(200);
   });
 
-  test("PUT /users/{id} -> unsuccessful update without token", async () => {
+  test("PUT /users/{id} -> fails with 401 when no token is provided", async () => {
     const updatedData = {
       firstname: "updatedname",
     };
@@ -226,7 +253,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("PUT /users/{id} -> unsuccessful update with invalid token", async () => {
+  test("PUT /users/{id} -> fails with 401 when token is invalid", async () => {
     const updatedData = {
       firstname: "updatedname",
     };
@@ -239,7 +266,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("PUT /users/{id} -> unsuccessful update with expired token", async () => {
+  test("PUT /users/{id} -> fails with 401 when token is expired", async () => {
     const expiredPayload = {
       username: "testuser",
       password: "123456",
@@ -262,7 +289,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("PUT /users -> updates a new user with wrong password format", async () => {
+  test("PUT /users -> fails with 400 when password format is invalid", async () => {
     const wrongPass = {
       password: "12",
     };
@@ -275,7 +302,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("PUT /users -> updates a new user with wrong username", async () => {
+  test("PUT /users -> fails with 400 when username format is invalid", async () => {
     const wrongUsername = {
       username: "nw",
     };
@@ -288,7 +315,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("PUT /users/{id} -> doesn't have a valid objectId", async () => {
+  test("PUT /users/{id} -> fails with 400 when user id format is invalid", async () => {
     const nonValidId = "507f1f77bcf86";
 
     const res = await server.request
@@ -297,7 +324,7 @@ describe("User API Tests PUT Requests (non-admin)", () => {
     expect(res.status).toBe(400);
   });
 
-  test("PUT /users/{id} -> non valid userId", async () => {
+  test("PUT /users/{id} -> fails with 400 when user id is not valid", async () => {
     const nonValidId = "507f1f77bcf86";
 
     const res = await server.request
@@ -305,11 +332,10 @@ describe("User API Tests PUT Requests (non-admin)", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(400);
   });
-
 });
 
-describe("User API Tests GET Requests (Admin only)", () => {
-  test("GET /users -> returns a list of users (Admin only restriction)", async () => {
+describe("User API – GET requests (admin access)", () => {
+  test("GET /users -> returns a list of users when requested by an admin", async () => {
     const res = await server.request
       .get("/users")
       .set("Authorization", `Bearer ${adminToken}`);
@@ -318,7 +344,7 @@ describe("User API Tests GET Requests (Admin only)", () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 
-  test("GET /users -> invalid token", async () => {
+  test("GET /users -> fails with 401 when token is invalid", async () => {
     const res = await server.request
       .get("/users")
       .set("Authorization", `Bearer not a valid token`);
@@ -326,7 +352,7 @@ describe("User API Tests GET Requests (Admin only)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("GET /users -> expired token", async () => {
+  test("GET /users -> fails with 401 when token is expired", async () => {
     const expiredPayload = {
       username: "testuser",
       password: "123456",
@@ -344,7 +370,7 @@ describe("User API Tests GET Requests (Admin only)", () => {
     expect(res.status).toBe(401);
   });
 
-  test("GET /users -> user isn't an admin", async () => {
+  test("GET /users -> fails with 403 when user is not an admin", async () => {
     const res = await server.request
       .get("/users")
       .set("Authorization", `Bearer ${token}`);
@@ -353,8 +379,8 @@ describe("User API Tests GET Requests (Admin only)", () => {
   });
 });
 
-describe("User API Tests DELETE Requests (Admin only)", async () => {
-  test("DELETE /users/{id} -> deletes a user by ID", async () => {
+describe("User API – DELETE requests (admin access)", async () => {
+  test("DELETE /users/{id} -> deletes a user successfully when requested by an admin", async () => {
     const res = await server.request
       .delete(`/users/${adminUserId}`)
       .set("Authorization", `Bearer ${adminToken}`);
@@ -362,7 +388,7 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(204);
   });
 
-  test("DELETE /users/{id} -> doesn't have a valid objectId", async () => {
+  test("DELETE /users/{id} -> fails with 400 when user id format is invalid", async () => {
     const nonValidId = "507f1f77bcf86";
 
     const res = await server.request
@@ -371,7 +397,7 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(400);
   });
 
-  test("DELETE /users/{id} -> invalid token", async () => {
+  test("DELETE /users/{id} -> fails with 401 when token is invalid", async () => {
     const res = await server.request
       .delete(`/users/${adminUserId}`)
       .set("Authorization", `Bearer not a valid token`);
@@ -379,7 +405,7 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(401);
   });
 
-  test("DELETE /users/{id} -> expired token", async () => {
+  test("DELETE /users/{id} -> fails with 401 when token is expired", async () => {
     const expiredPayload = {
       username: "testuser",
       password: "123456",
@@ -397,7 +423,7 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(401);
   });
 
-  test("DELETE /users/{id} -> user isn't an admin", async () => {
+  test("DELETE /users/{id} -> fails with 403 when user is not an admin", async () => {
     const res = await server.request
       .delete(`/users/${userId}`)
       .set("Authorization", `Bearer ${token}`);
@@ -405,8 +431,8 @@ describe("User API Tests DELETE Requests (Admin only)", async () => {
     expect(res.status).toBe(403);
   });
 
-  test("DELETE /users/{id} -> doesn't find the role", async () => {
-    const nonExistentId = "507f1f77bcf86cd799439011";
+  test("DELETE /users/{id} -> fails with 404 when user does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId().toString();
 
     const res = await server.request
       .delete(`/users/${nonExistentId}`)
