@@ -69,6 +69,9 @@ router.get("/", authenticate, hasAdminRole, userCtrl.list);
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/User"
+ * 
+ *      "400":
+ *        $ref: "#/components/responses/BadRequestError"
  *
  *       "401":
  *          $ref: "#/components/responses/UnauthorizedError"
