@@ -129,9 +129,6 @@ router.post("/", authenticate, hasAdminRole, validate(createRoleSchema), roleCtr
  *        "404": 
  *          $ref: "#/components/responses/NotFound"
  * 
- *        "409":
- *          $ref: "#/components/responses/Conflict"
- * 
  */
 router.put(
   "/:id",
