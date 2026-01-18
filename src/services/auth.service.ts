@@ -15,6 +15,7 @@ export const login = async (username: string, password: string) => {
   if(!match) return null;
 
   const payload: AuthPayload = {
+    id: user._id.toString(),
     username: user.username,
     email: user.email,
     roles: user.roles

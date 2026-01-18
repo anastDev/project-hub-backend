@@ -13,7 +13,6 @@ export interface IAddress {
   municipality?: string;
 }
 
-
 const AddressSchema = new Schema<IAddress>({
   area: String,
   street: String,
@@ -44,22 +43,22 @@ export interface IUser extends Document {
   email: string;
   address?: IAddress;
   phone?: IPhone[];
-  roles: IUserRole[]
+  roles: IUserRole[];
 }
 
 const UserRoleSchema = new Schema<IUserRole>(
   {
-    role: { 
-      type: String, 
-      required: true 
+    role: {
+      type: String,
+      required: true,
     },
-    description: { 
-      type: String 
+    description: {
+      type: String,
     },
-    active: { 
-      type: Boolean, 
-      default: true 
-    }
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   { _id: false }
 );
@@ -95,7 +94,7 @@ const UserSchema = new Schema<IUser>(
       {
         type: [UserRoleSchema],
         required: true,
-        default: [{role: "READER", active: true}]
+        default: [{ role: "READER", active: true }],
       },
     ],
   },

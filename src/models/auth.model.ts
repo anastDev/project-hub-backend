@@ -1,7 +1,8 @@
-import {Types} from "mongoose";
+import { IUserRole } from "./user.model";
 
 export interface AuthPayload {
+  id: string;
   username: string;
   email?: string;
-  roles: Types.ObjectId[]
+  roles?: IUserRole[];
 }
