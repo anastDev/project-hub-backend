@@ -5,14 +5,12 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { describe } from "node:test";
-import { AuthPayload } from "../models/auth.model";
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const server = new TestServer();
 server.app.use("/auth", authRoutes);
 
-let token: string;
 let userId: string;
 let testUserData: any;
 
@@ -62,8 +60,8 @@ describe("AUTH Api Tests", () => {
       const token = res.body.token;
       const decoded = jwt.verify(token, JWT_SECRET) as any;
 
-      expect(decoded.id).toBe(userId);
       expect(decoded.username).toBe("admin");
+      expect(decoded.userId).toBe(userId);
     }
   });
 
