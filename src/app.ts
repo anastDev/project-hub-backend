@@ -15,13 +15,17 @@ setupSwagger(app);
 app.use(morgan("dev"));
 app.use(express.json());
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://anastdev.github.io/react-projects-hub/",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", 
-      "https://anastdev.github.io/react-projects-hub/"
-    ],
+    origin: allowedOrigins,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-type", "Authorization"],
   }),
 );
 

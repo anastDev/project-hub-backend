@@ -22,7 +22,7 @@ const options: swaggerJSDoc.Options = {
       {
         url: "https://anastdev.github.io/react-projects-hub/",
         description: "Production server"
-      }
+      },
     ],
     components: {
       securitySchemas: {
