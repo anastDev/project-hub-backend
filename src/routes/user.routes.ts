@@ -117,7 +117,7 @@ router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
  *          $ref: "#/components/responses/UnauthorizedError"
  * 
  *        "409":
- *          $ref: "#components/responses/Conflict"
+ *          $ref: "#/components/responses/Conflict"
  *
  */
 router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
