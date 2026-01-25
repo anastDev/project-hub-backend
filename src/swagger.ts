@@ -19,6 +19,10 @@ const options: swaggerJSDoc.Options = {
         url: "http://localhost:3000/api",
         description: "Local Server",
       },
+      {
+        url: "https://anastdev.github.io/react-projects-hub/",
+        description: "Production server"
+      }
     ],
     components: {
       securitySchemas: {

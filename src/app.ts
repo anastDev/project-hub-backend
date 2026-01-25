@@ -17,7 +17,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173", 
+      "https://anastdev.github.io/react-projects-hub/"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
