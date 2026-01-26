@@ -20,7 +20,7 @@ const options: swaggerJSDoc.Options = {
         description: "Local Server",
       },
       {
-        url: "https://anastdev.github.io/react-projects-hub/",
+        url: "https://anastdev.github.io/react-projects-hub/api",
         description: "Production server"
       },
     ],
