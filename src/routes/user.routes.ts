@@ -120,7 +120,7 @@ router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
  *          $ref: "#/components/responses/Conflict"
  *
  */
-router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
+router.post("/", validate(createUserSchema), userCtrl.create);
 
 /**
  * @openapi
@@ -157,9 +157,6 @@ router.post("/", authenticate, validate(createUserSchema), userCtrl.create);
  * 
  *       "400":
  *         $ref: "#/components/responses/BadRequestError"
- * 
- *       "401":
- *         $ref: "#/components/responses/UnauthorizedError"
  * 
  *       "404":
  *         $ref: "#/components/responses/NotFound"
