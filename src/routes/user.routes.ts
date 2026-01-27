@@ -15,7 +15,7 @@ const router = Router();
  * @openapi
  * /users:
  *   get:
- *     summary: Returns a list of users (Admin only)
+ *     summary: Returns a list of users 
  *     description: |
  *       Retrieve all users from the system.
  *       Requires admin privileges.
@@ -113,9 +113,6 @@ router.get("/:id", authenticate, validateObjectId("id"), userCtrl.getOne);
  *        "400":
  *          $ref: "#/components/responses/BadRequestError"
  *
- *        "401":
- *          $ref: "#/components/responses/UnauthorizedError"
- * 
  *        "409":
  *          $ref: "#/components/responses/Conflict"
  *
@@ -157,6 +154,9 @@ router.post("/", validate(createUserSchema), userCtrl.create);
  * 
  *       "400":
  *         $ref: "#/components/responses/BadRequestError"
+ * 
+ *       "401":
+ *         $ref: "#/components/responses/UnauthorizedError"
  * 
  *       "404":
  *         $ref: "#/components/responses/NotFound"

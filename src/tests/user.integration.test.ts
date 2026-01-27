@@ -75,6 +75,15 @@ afterAll(async () => {
 });
 
 describe("User API – GET requests (non-admin access)", () => {
+   test("GET /users -> returns a list of users", async () => {
+    const res = await server.request
+      .get("/users")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
   test("GET /users/{id} -> returns the authenticated user by id", async () => {
     const res = await server.request
       .get(`/users/${userId}`)
@@ -132,7 +141,6 @@ describe("User API – POST requests (non-admin access)", () => {
   test("POST /users -> creates a new user successfully", async () => {
     const res = await server.request
       .post("/users")
-      .set("Authorization", `Bearer ${token}`)
       .send({
         username: "newuser",
         password: "123456",
@@ -172,41 +180,6 @@ describe("User API – POST requests (non-admin access)", () => {
       .send({ username: "newuser", password: "123456" });
 
     expect(res.status).toBe(400);
-  });
-
-  test("POST /users -> fails with 401 when token is invalid", async () => {
-    const res = await server.request
-      .post("/users")
-      .set("Authorization", `Bearer not a valid token`)
-      .send({
-        username: "newuser",
-        password: "123456",
-        email: "newuser@email.com",
-      });
-
-    expect(res.status).toBe(401);
-  });
-
-  test("POST /users -> fails with 401 when token is expired", async () => {
-    const expiredPayload = {
-      username: "testuser",
-      password: "123456",
-      email: "testUser@email.com",
-    };
-
-    const expiredToken = jwt.sign(expiredPayload, JWT_SECRET, {
-      expiresIn: "-1h",
-    });
-
-    const res = await server.request
-      .post("/users")
-      .set("Authorization", `Bearer ${expiredToken}`)
-      .send({
-        username: "newuser",
-        password: "123456",
-        email: "newuser@email.com",
-      });
-    expect(res.status).toBe(401);
   });
 
   test("POST /users -> fails with 409 when user already exists", async () => {
@@ -335,15 +308,6 @@ describe("User API – PUT requests (non-admin access)", () => {
 });
 
 describe("User API – GET requests (admin access)", () => {
-  test("GET /users -> returns a list of users when requested by an admin", async () => {
-    const res = await server.request
-      .get("/users")
-      .set("Authorization", `Bearer ${adminToken}`);
-
-    expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-  });
-
   test("GET /users -> fails with 401 when token is invalid", async () => {
     const res = await server.request
       .get("/users")
