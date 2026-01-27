@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 export const validateObjectId =
   (params: "id") => (req: Request, res: Response, next: NextFunction) => {
     const value = req.params[params];
-    console.log("🔍 Validating ObjectId:", value);
-    console.log("🔍 Is valid?", mongoose.Types.ObjectId.isValid(value!));
 
     if (!value || !mongoose.Types.ObjectId.isValid(value)) {
       return res
