@@ -22,6 +22,5 @@ export const login = async (username: string, password: string) => {
   }
 
   const token = jwt.sign(payload as any, JWT_SECRET, {expiresIn: "1h"});
-  console.log(token)
   return {user, token};
 };
