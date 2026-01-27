@@ -21,7 +21,7 @@ export const createUserSchema = z.object({
   po: z.string().optional(),
   municipality: z.string().optional(),
   phoneType: z.enum(["phone", "home", "work"]).optional().or(z.literal("")),
-  phoneNumber: z.string(),
+  phoneNumber: z.string().optional(),
 });
 
 export const updateUserSchema = createUserSchema.partial();
