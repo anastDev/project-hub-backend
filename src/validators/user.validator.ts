@@ -4,8 +4,8 @@ import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 extendZodWithOpenApi(z);
 
 export const phoneSchema = z.object({
-  type: z.string(),
-  number: z.string(),
+  phoneType: z.enum(['phone', 'home', 'work']).optional().or(z.literal("")),
+  phoneNumber: z.string(),
 });
 
 export const addressSchema = z.object({
@@ -17,11 +17,17 @@ export const addressSchema = z.object({
 });
 
 export const createUserSchema = z.object({
-  username: z.string().min(3),
-  password: z.string().min(5),
+  username: z
+    .string()
+    .min(3, { error: "Username must be at least 3 characters" }),
+  password: z
+    .string()
+    .min(5, { error: "Password must be at least 5 characters" }),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
-  email: z.email(),
+  email: z
+    .email("Invalid email address")
+    .min(1, { error: "Email is required" }),
   address: addressSchema.optional(),
   phone: z.array(phoneSchema).optional(),
 });
