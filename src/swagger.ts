@@ -54,7 +54,7 @@ const options: swaggerJSDoc.Options = {
       responses: {
         BadRequestError: {
           description:
-            "Bad Request - Request was malformed or contains invalid data.",
+            "**400 Bad Request** - Request was malformed or contains invalid data.",
           content: {
             "application/json": {
               schema: {
