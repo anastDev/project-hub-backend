@@ -4,6 +4,7 @@ import mongooseToSwagger from "mongoose-to-swagger";
 import { Express } from "express";
 import Role from "./models/role.model";
 import User from "./models/user.model";
+import WeatherApiResponse from "./models/weather.model";
 import { zodComponents } from "./validators/zod-to-swagger/zod.registry";
 
 const options: swaggerJSDoc.Options = {
@@ -21,7 +22,7 @@ const options: swaggerJSDoc.Options = {
       },
       {
         url: "https://anastdev.github.io/react-projects-hub/api",
-        description: "Production server"
+        description: "Production server",
       },
     ],
     components: {
@@ -35,6 +36,189 @@ const options: swaggerJSDoc.Options = {
       schemas: {
         User: mongooseToSwagger(User),
         Role: mongooseToSwagger(Role),
+        WeatherResponse: {
+          type: "object",
+          properties: {
+            coord: {
+              type: "object",
+              properties: {
+                lon: {
+                  type: "number",
+                  description: "Longitude of the location",
+                },
+                lat: {
+                  type: "number",
+                  description: "Latitude of the location",
+                },
+              },
+              required: ["lon", "lat"],
+            },
+            weather: {
+              type: "array",
+              description: "Weather condition information",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "number", description: "Weather condition id" },
+                  main: {
+                    type: "string",
+                    description:
+                      "Group of weather parameters (Rain, Snow, Extreme etc.)",
+                  },
+                  description: {
+                    type: "string",
+                    description: "Weather condition within the group",
+                  },
+                  icon: { type: "string", description: "Weather icon id" },
+                },
+              },
+            },
+            main: {
+              type: "object",
+              properties: {
+                temp: { type: "number", description: "Temperature in Celsius" },
+                feels_like: {
+                  type: "number",
+                  description: "Temperature accounting for human perception",
+                },
+                temp_min: {
+                  type: "number",
+                  description: "Minimum temperature at the moment",
+                },
+                temp_max: {
+                  type: "number",
+                  description: "Maximum temperature at the moment",
+                },
+                pressure: {
+                  type: "number",
+                  description: "Atmospheric pressure in hPa",
+                },
+                humidity: {
+                  type: "number",
+                  description: "Humidity percentage",
+                },
+              },
+              required: ["temp", "feels_like", "pressure", "humidity"],
+            },
+            visibility: {
+              type: "number",
+              description: "Visibility in meters, maximum value is 10km",
+            },
+            wind: {
+              type: "object",
+              properties: {
+                speed: {
+                  type: "number",
+                  description: "Wind speed in meter/sec",
+                },
+                deg: {
+                  type: "number",
+                  description: "Wind direction in degrees",
+                },
+                gust: { type: "number", description: "Wind gust in meter/sec" },
+              },
+              required: ["speed", "deg"],
+            },
+            rain: {
+              type: "object",
+              description: "Rain volume for the last hour",
+              properties: {
+                "1h": {
+                  type: "number",
+                  description: "Rain volume for last hour in mm",
+                },
+              },
+            },
+            snow: {
+              type: "object",
+              description: "Snow volume for the last hour",
+              properties: {
+                "1h": {
+                  type: "number",
+                  description: "Snow volume for last hour in mm",
+                },
+              },
+            },
+            clouds: {
+              type: "object",
+              properties: {
+                all: { type: "number", description: "Cloudiness percentage" },
+              },
+              required: ["all"],
+            },
+            sys: {
+              type: "object",
+              properties: {
+                country: {
+                  type: "string",
+                  description: "Country code (GB, US, etc.)",
+                },
+                sunrise: {
+                  type: "number",
+                  description: "Sunrise time, Unix timestamp UTC",
+                },
+                sunset: {
+                  type: "number",
+                  description: "Sunset time, Unix timestamp UTC",
+                },
+              },
+              required: ["country", "sunrise", "sunset"],
+            },
+            timezone: {
+              type: "number",
+              description: "Shift in seconds from UTC",
+            },
+            name: {
+              type: "string",
+              description: "City name",
+            },
+            cod: {
+              type: "number",
+              description: "Internal parameter, HTTP status code",
+            },
+          },
+          required: [
+            "coord",
+            "weather",
+            "main",
+            "visibility",
+            "wind",
+            "clouds",
+            "sys",
+            "name",
+            "cod",
+          ],
+          example: {
+            coord: { lon: -0.1257, lat: 51.5085 },
+            weather: [
+              {
+                id: 300,
+                main: "Drizzle",
+                description: "light intensity drizzle",
+                icon: "09d",
+              },
+            ],
+            main: {
+              temp: 15.3,
+              feels_like: 14.8,
+              temp_min: 13.9,
+              temp_max: 16.7,
+              pressure: 1012,
+              humidity: 82,
+            },
+            visibility: 10000,
+            wind: { speed: 4.1, deg: 230 },
+            clouds: { all: 75 },
+            sys: {
+              country: "GB",
+              sunrise: 1605686436,
+              sunset: 1605720455,
+            },
+            timezone: 0,
+            name: "London",
+            cod: 200,
+          },
+        },
         ...zodComponents.components?.schemas,
         ResponseError: {
           type: "object",
@@ -216,6 +400,21 @@ const options: swaggerJSDoc.Options = {
               example: {
                 message: "Database connection issue",
                 code: "DATABASE_UNAVAILABLE",
+              },
+            },
+          },
+        },
+        CityNotFound: {
+          description: "City not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ResponseError",
+              },
+              example: {
+                message: "City by the name `London` not found",
+                error: "CITY_NOT_FOUND",
+                cityName: "London",
               },
             },
           },
