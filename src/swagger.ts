@@ -177,17 +177,6 @@ const options: swaggerJSDoc.Options = {
               description: "Internal parameter, HTTP status code",
             },
           },
-          required: [
-            "coord",
-            "weather",
-            "main",
-            "visibility",
-            "wind",
-            "clouds",
-            "sys",
-            "name",
-            "cod",
-          ],
           example: {
             coord: { lon: -0.1257, lat: 51.5085 },
             weather: [
