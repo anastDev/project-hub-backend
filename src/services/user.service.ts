@@ -1,7 +1,6 @@
 import User, { IUser } from "../models/user.model";
 import Role from "../models/role.model";
 import bcrypt from "bcrypt";
-import { Types } from "mongoose";
 
 const SALT_ROUNDS = 10;
 
