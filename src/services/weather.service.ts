@@ -9,17 +9,17 @@ export const getCurrentWeatherByCity = async (
   city: string,
 ): Promise<WeatherApiResponse> => {
   try {
-    const res = await fetch(
+    const result = await fetch(
       `${WEATHER_API}weather?q=${city}&units=metric&appid=${WEATHER_API_KEY}`,
     );
 
-    console.log("Response status", res.status);
+    console.log("Response status", result.status);
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch weather ${res.status}`);
+    if (!result.ok) {
+      throw new Error(`Failed to fetch weather ${result.status}`);
     }
 
-    return await res.json();
+    return await result.json();
   } catch (err) {
     console.log("Error fetching weather: ", err);
     throw err;
