@@ -7,6 +7,7 @@ import roleRoutes from "./routes/role.routes";
 import authRoutes from "./routes/auth.routes";
 import weatherRoutes from "./routes/weather.routes";
 import conditionRoutes from "./routes/condition.routes";
+import movieRoutes from "./routes/movie.routes";
 
 import { setupSwagger } from "./swagger";
 
@@ -36,6 +37,6 @@ app.use("/api/roles", roleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/weather", weatherRoutes)
 app.use("/api/conditions", conditionRoutes);
-app.use("/api/movies", )
+app.use("/api/movies", movieRoutes)
 
 export default app;
