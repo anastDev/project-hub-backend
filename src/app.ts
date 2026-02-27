@@ -19,7 +19,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://anastdev.github.io/react-projects-hub",
+  "https://anastdev.github.io",
 ];
 
 app.use(
