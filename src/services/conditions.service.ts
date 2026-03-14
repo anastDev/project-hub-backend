@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
+import filterByUserLocation from "../utils/geoFilter";
 
 dotenv.config();
 
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
 
-export const getRoadConditions = async(countyNo: number) => {
+export const getRoadConditions = async(countyNo: number, lat: number, long: number) => {
   try {
     const xmlBody = `
     <REQUEST>
@@ -20,6 +21,7 @@ export const getRoadConditions = async(countyNo: number) => {
         <INCLUDE>RoadNumber</INCLUDE>
         <INCLUDE>CountyNo</INCLUDE>
         <INCLUDE>LocationText</INCLUDE>
+        <INCLUDE>Geometry</INCLUDE>
         <INCLUDE>StartTime</INCLUDE>
         <INCLUDE>EndTime</INCLUDE>
       </QUERY>
@@ -34,7 +36,8 @@ export const getRoadConditions = async(countyNo: number) => {
 
   const data = await response.json();
 
-  return data.RESPONSE.RESULT[0].RoadCondition;
+  const allConditions = data.RESPONSE.RESULT[0].RoadCondition;
+  return filterByUserLocation(allConditions, lat, long);
   } catch (err) {
     console.error("Error fetching road conditions: ", err);
     throw err;
