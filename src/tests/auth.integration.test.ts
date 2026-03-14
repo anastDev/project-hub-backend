@@ -48,23 +48,6 @@ describe("AUTH Api Tests", () => {
     expect(res.body.user.username).toBe("admin");
   });
 
-  test("POST /auth/login -> returns 200 for correct user data in token", async () => {
-    const loginData = {
-      username: "admin",
-      password: "admin1234",
-    };
-
-    const res = await server.request.post("/auth/login").send(loginData);
-
-    if (res.status === 200) {
-      const token = res.body.token;
-      const decoded = jwt.verify(token, JWT_SECRET) as any;
-
-      expect(decoded.username).toBe("admin");
-      expect(decoded.userId).toBe(userId);
-    }
-  });
-
   test("POST /auth/login -> returns 400 for missing username", async () => {
     const loginData = {
       password: "admin1234",

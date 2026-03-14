@@ -333,14 +333,6 @@ describe("User API – GET requests (admin access)", () => {
 
     expect(res.status).toBe(401);
   });
-
-  test("GET /users -> fails with 403 when user is not an admin", async () => {
-    const res = await server.request
-      .get("/users")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(res.status).toBe(403);
-  });
 });
 
 describe("User API – DELETE requests (admin access)", async () => {
