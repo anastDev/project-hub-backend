@@ -6,6 +6,7 @@ import Role from "./models/role.model";
 import User from "./models/user.model";
 import WeatherApiResponse from "./models/weather.model";
 import { zodComponents } from "./validators/zod-to-swagger/zod.registry";
+import { exactOptional } from "zod";
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -223,6 +224,93 @@ const options: swaggerJSDoc.Options = {
             password: { type: "string", required: true },
           },
         },
+        MovieResponse: {
+          type: "object",
+          properties: {
+            Title: { type: "string", description: "Movie title" },
+            Year: { type: "string", description: "Release year" },
+            Rated: {
+              type: "string",
+              description: "Movie rating (PG, PG-13, R, etc.)",
+            },
+            Released: { type: "string", description: "Release date" },
+            Runtime: {
+              type: "string",
+              description: "Movie runtime (e.g., '95 min')",
+            },
+            Genre: {
+              type: "string",
+              description: "Movie genres (comma-separated)",
+            },
+            Director: { type: "string", description: "Director name(s)" },
+            Writer: { type: "string", description: "Writer name(s)" },
+            Actors: {
+              type: "string",
+              description: "Main actors (comma-separated)",
+            },
+            Plot: { type: "string", description: "Movie plot summary" },
+            Language: {
+              type: "string",
+              description: "Languages (comma-separated)",
+            },
+            Country: { type: "string", description: "Country of origin" },
+            Awards: { type: "string", description: "Awards and nominations" },
+            Poster: {
+              type: "string",
+              description: "URL to movie poster image",
+            },
+            Source: { type: "string", description: "Rating source" },
+            Value: { type: "string", description: "Rating value" },
+            Metascore: { type: "string", description: "Metacritic score" },
+            imdbRating: { type: "string", description: "IMDb rating" },
+            imdbVotes: { type: "string", description: "Number of IMDb votes" },
+            imdbID: {
+              type: "string",
+              description: "IMDb ID (e.g., 'tt2096673')",
+            },
+            Type: {
+              type: "string",
+              description: "Media type (movie, series, episode)",
+            },
+            DVD: { type: "string", description: "DVD release date" },
+            BoxOffice: { type: "string", description: "Box office earnings" },
+            Production: { type: "string", description: "Production company" },
+            Website: { type: "string", description: "Official website" },
+            Response: {
+              type: "string",
+              description: "Response status ('True' or 'False')",
+            },
+          },
+          required: ["Title", "Year", "Genre", "imdbID", "Type"],
+          example: {
+            Title: "Inside Out",
+            Year: "2015",
+            Rated: "PG",
+            Released: "19 Jun 2015",
+            Runtime: "95 min",
+            Genre: "Animation, Adventure, Comedy",
+            Director: "Pete Docter, Ronnie Del Carmen",
+            Writer: "Pete Docter, Ronnie Del Carmen, Meg LeFauve",
+            Actors: "Amy Poehler, Bill Hader, Lewis Black",
+            Plot: "After young Riley is uprooted from her Midwest life...",
+            Language: "English, Portuguese, Latvian",
+            Country: "United States",
+            Awards: "Won 1 Oscar. 99 wins & 118 nominations total",
+            Poster: "",
+            Source: "Internet Movie Database",
+            Value: "8.1/10",
+            Metascore: "94",
+            imdbRating: "8.1",
+            imdbVotes: "905,131",
+            imdbID: "tt2096673",
+            Type: "movie",
+            DVD: "N/A",
+            BoxOffice: "$356,461,711",
+            Production: "N/A",
+            Website: "N/A",
+            Response: "True",
+          },
+        },
       },
       responses: {
         BadRequestError: {
@@ -404,6 +492,34 @@ const options: swaggerJSDoc.Options = {
                 message: "City by the name `London` not found",
                 error: "CITY_NOT_FOUND",
                 cityName: "London",
+              },
+            },
+          },
+        },
+        MovieNotFound: {
+          description: "Movie not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ResponseError",
+              },
+              example: {
+                message: "Movie with title `Inside out` not found",
+                error: "MOVIE_NOT_FOUND",
+              },
+            },
+          },
+        },
+        TitleRequired: {
+          description: "Title parameter is missing",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ResponseError",
+              },
+              example: {
+                message: "Title parameter is required",
+                code: "TITLE_REQUIRED",
               },
             },
           },
