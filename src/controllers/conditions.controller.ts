@@ -9,9 +9,10 @@ export const conditions = async (
 ) => {
   try {
     const city = req.params.county as string;
-    
-    const lat = parseFloat(req.query.lat as string);
-    const long = parseFloat(req.query.long as string);
+
+    const lat = parseFloat(req.body.lat);
+    const long = parseFloat(req.body.long);
+
 
     if (isNaN(lat) || isNaN(long)) {
     return res.status(400).json({ error: "lat and long must be valid numbers" });
