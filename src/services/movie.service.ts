@@ -11,8 +11,6 @@ export const getMovieByTitle = async(title: string): Promise<OmdbMovieResponse> 
   const encodedTitle = encodeURIComponent(title);
   const result = await fetch(`${OMDB_API}?apikey=${OMDB_API_KEY}&t=${encodedTitle}`);
 
-  // console.log("Response status", result.status);
-
   if(!result.ok) {
     throw new Error(`Failed to fetch movie ${result.status}`);
   }

@@ -1,4 +1,3 @@
-import { appendFile } from "node:fs";
 import { connectDB } from "./utils/db";
 import app from "./app";
 
