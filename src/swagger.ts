@@ -37,6 +37,17 @@ const options: swaggerJSDoc.Options = {
       schemas: {
         User: mongooseToSwagger(User),
         Role: mongooseToSwagger(Role),
+        GeneratorResponse: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+            data: { type: "string" },
+          },
+          example: {
+            message: "Content generated successfully",
+            data: "feat: update variable value from 1 to 2",
+          },
+        },
         WeatherResponse: {
           type: "object",
           properties: {
@@ -208,6 +219,7 @@ const options: swaggerJSDoc.Options = {
             name: "London",
             cod: 200,
           },
+
         },
         ...zodComponents.components?.schemas,
         ResponseError: {
@@ -343,6 +355,13 @@ const options: swaggerJSDoc.Options = {
                     code: "MISSING_REQUIRED_FIELDS",
                   },
                 },
+                missingCode: {
+                  summary: "Missing code parameter",
+                  value: {
+                    message: "Previous code parameter is required",
+                    code: "PREV_CODE_REQUIRED",
+                  },
+                }
               },
             },
           },
@@ -524,6 +543,7 @@ const options: swaggerJSDoc.Options = {
             },
           },
         },
+        
       },
     },
     security: [{ bearerAuth: [] }],
