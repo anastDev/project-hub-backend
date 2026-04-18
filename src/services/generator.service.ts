@@ -48,8 +48,12 @@ export const explainCode = async (
     });
 
    const responseText = result.text || "";
+   const jsonStartIndex = responseText.indexOf("{");
+   const jsonEndIndex = responseText.lastIndexOf("}") + 1;
+   const cleanedResponse = responseText.substring(jsonStartIndex, jsonEndIndex);
+   const parsed = JSON.parse(cleanedResponse);
 
-    return responseText.replace(/\n/g, " ");
+    return parsed;
   } catch (err) {
     console.log("Error: ", err);
     throw err;
