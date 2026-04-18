@@ -22,8 +22,7 @@ RULES:
 5. Only add a scope if it's obvious (e.g. auth, api, db, ui, middleware). If unsure, omit it
 6. For breaking changes: append ! after type and add BREAKING CHANGE: in the body
 7. Return ONLY the commit message — no explanations, no reasoning, no markdown, no extra text
-
-Include the context/file of the change in your response inside the parenthesis if provided, but do not include any code snippets in the commit message.
+8. If a File/Context is provided below, put it INSIDE the parentheses as the scope
 `;
 
 if (context) {

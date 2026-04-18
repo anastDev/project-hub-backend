@@ -113,4 +113,17 @@ Show cleaner/safer version with before/after if helpful.
 
 ## Output Format
 Return ONLY the explanation — no meta-commentary like "Here's my response" or "I'll now explain this".
+
+Return a JSON object only, no markdown, no extra text.
+The object must have these fields:
+{
+  "summary": "one sentence explanation",
+  "analogy": "a simple everyday analogy",
+  "steps": ["step 1", "step 2", "step 3"],
+  "gotcha": "one common mistake to avoid",
+  "takeaways": ["takeaway 1", "takeaway 2"]
+}
+
+Code: ${code}
+Question: ${question}
 `;
