@@ -91,14 +91,7 @@ router.post("/", generatorCtrl.generate);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Code explained successfully
- *                 data:
- *                   type: string
- *                   example: "This function returns the sum of two numbers."
+ *               $ref: "#/components/schemas/ExplanationGeneratorResponse"
  *
  *       "400":
  *         $ref: "#/components/responses/BadRequestError"

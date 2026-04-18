@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import * as generatorService from "../services/generator.service";
 
-export const generate = async (req: Request, res: Response, next: NextFunction) => {
+export const generate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { prevCode, newCode, context } = req.body;
 
@@ -9,21 +13,25 @@ export const generate = async (req: Request, res: Response, next: NextFunction) 
     // console.log("Received new code:", newCode);
     // console.log("Received context:", context);
 
-    if (!prevCode || typeof prevCode !== 'string' || prevCode.trim() === "") {
+    if (!prevCode || typeof prevCode !== "string" || prevCode.trim() === "") {
       return res.status(400).json({
         message: `Previous code parameter is required`,
         code: "PREV_CODE_REQUIRED",
       });
     }
 
-    if (!newCode || typeof newCode !== 'string' || newCode.trim() === "") {
+    if (!newCode || typeof newCode !== "string" || newCode.trim() === "") {
       return res.status(400).json({
         message: `New code parameter is required`,
         code: "NEW_CODE_REQUIRED",
       });
     }
 
-    const generatedContent = await generatorService.generateContent(prevCode, newCode, context);
+    const generatedContent = await generatorService.generateContent(
+      prevCode,
+      newCode,
+      context,
+    );
 
     res.status(200).json({
       message: "Content generated successfully",
@@ -34,12 +42,15 @@ export const generate = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
+export const explain = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { code, question } = req.body;
 
-export const explain = async (req: Request, res: Response, next: NextFunction) => {
- try {
-    const {code, question} = req.body;
-
-    if (!code || typeof code !== 'string' || code.trim() === "") {
+    if (!code || typeof code !== "string" || code.trim() === "") {
       return res.status(400).json({
         message: `Code parameter is required`,
         code: "CODE_REQUIRED",
@@ -52,8 +63,7 @@ export const explain = async (req: Request, res: Response, next: NextFunction) =
       message: "Code explained successfully",
       data: explanation,
     });
-
- } catch (err) {
+  } catch (err) {
     next(err);
- }
+  }
 };

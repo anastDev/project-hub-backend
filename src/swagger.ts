@@ -4,9 +4,7 @@ import mongooseToSwagger from "mongoose-to-swagger";
 import { Express } from "express";
 import Role from "./models/role.model";
 import User from "./models/user.model";
-import WeatherApiResponse from "./models/weather.model";
 import { zodComponents } from "./validators/zod-to-swagger/zod.registry";
-import { exactOptional } from "zod";
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -37,6 +35,48 @@ const options: swaggerJSDoc.Options = {
       schemas: {
         User: mongooseToSwagger(User),
         Role: mongooseToSwagger(Role),
+        ExplanationGeneratorResponse: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+            data: {
+              type: "object",
+              properties: {
+                summary: { type: "string" },
+                analogy: { type: "string" },
+                steps: {
+                  type: "array",
+                  items: { type: "string" },
+                },
+                gotcha: { type: "string" },
+                takeaways: {
+                  type: "array",
+                  items: { type: "string" },
+                },
+              },
+            },
+          },
+          example: {
+            message: "Code explained successfully",
+            data: {
+              summary:
+                "Generics allow you to write reusable code that works with any data type.",
+              analogy:
+                "Imagine a shipping box labelled with its contents so the receiver knows what to expect.",
+              steps: [
+                "The <T> acts as a placeholder for any type you provide later.",
+                "Putting T in both the parameter and return type forces consistency.",
+                "Calling identity<string> tells the compiler to swap T for string.",
+              ],
+              gotcha:
+                "Avoid using any — it turns off type safety while generics keep it intact.",
+              takeaways: [
+                "Generics create reusable logic that preserves type information.",
+                "Think of T as a label for the specific type in that instance.",
+              ],
+            },
+          },
+        },
         GeneratorResponse: {
           type: "object",
           properties: {
@@ -219,7 +259,6 @@ const options: swaggerJSDoc.Options = {
             name: "London",
             cod: 200,
           },
-
         },
         ...zodComponents.components?.schemas,
         ResponseError: {
@@ -361,7 +400,7 @@ const options: swaggerJSDoc.Options = {
                     message: "Previous code parameter is required",
                     code: "PREV_CODE_REQUIRED",
                   },
-                }
+                },
               },
             },
           },
@@ -543,7 +582,6 @@ const options: swaggerJSDoc.Options = {
             },
           },
         },
-        
       },
     },
     security: [{ bearerAuth: [] }],
