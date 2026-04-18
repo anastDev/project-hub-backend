@@ -35,6 +35,53 @@ const options: swaggerJSDoc.Options = {
       schemas: {
         User: mongooseToSwagger(User),
         Role: mongooseToSwagger(Role),
+        HealthCheck: {
+          type: "object",
+          required: [
+            "status",
+            "uptime",
+            "responseTimeMs",
+            "timestamp",
+            "dependencies",
+          ],
+          properties: {
+            status: {
+              type: "string",
+              enum: ["healthy", "degraded"],
+              example: "healthy",
+            },
+            uptime: {
+              type: "number",
+              description: "Process uptime in seconds",
+              example: 123.456,
+            },
+            responseTimeMs: {
+              type: "number",
+              description: "Endpoint response time in milliseconds",
+              example: 4.21,
+            },
+            timestamp: {
+              type: "string",
+              format: "date-time",
+              example: "2026-04-18T12:00:00.000Z",
+            },
+            dependencies: {
+              type: "object",
+              properties: {
+                database: {
+                  type: "string",
+                  enum: ["up", "down"],
+                  example: "up",
+                },
+              },
+            },
+            message: {
+              type: "string",
+              description: "Present only when degraded",
+              example: "DB ping timeout",
+            },
+          },
+        },
         ExplanationGeneratorResponse: {
           type: "object",
           properties: {

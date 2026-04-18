@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import morgan from "morgan";
 import cors from "cors";
 
@@ -9,8 +9,10 @@ import weatherRoutes from "./routes/weather.routes";
 import conditionRoutes from "./routes/condition.routes";
 import movieRoutes from "./routes/movie.routes";
 import generatorRoutes from "./routes/generator.routes";
+import healthRoutes from "./routes/health.routes";
 
 import { setupSwagger } from "./swagger";
+import e from "express";
 
 const app = express();
 
@@ -40,5 +42,6 @@ app.use("/api/weather", weatherRoutes)
 app.use("/api/conditions", conditionRoutes);
 app.use("/api/movies", movieRoutes);
 app.use("/api/generator", generatorRoutes);
+app.use("/api/health", healthRoutes);
 
 export default app;
