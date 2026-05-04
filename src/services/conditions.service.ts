@@ -1,12 +1,17 @@
 import dotenv from "dotenv";
-import filterByUserLocation from "../utils/geoFilter";
+import { filterByUserLocation, filterDeviationsByLocation } from "../utils/geoFilter";
+
 
 dotenv.config();
 
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
 
-export const getRoadConditions = async(countyNo: number, lat: number, long: number) => {
+export const getRoadConditions = async (
+  countyNo: number,
+  lat: number,
+  long: number,
+) => {
   try {
     const xmlBody = `
     <REQUEST>
@@ -28,18 +33,73 @@ export const getRoadConditions = async(countyNo: number, lat: number, long: numb
     </REQUEST>
   `;
 
-  const response = await fetch(TRAFIKVERKET_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/xml" },
-    body: xmlBody,
-  });
+    const response = await fetch(TRAFIKVERKET_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/xml" },
+      body: xmlBody,
+    });
 
-  const data = await response.json();
+    const data = await response.json();
+    // console.log("Raw road conditions data: ", data);
 
-  const allConditions = data.RESPONSE.RESULT[0].RoadCondition;
-  return filterByUserLocation(allConditions, lat, long);
+    const allConditions = data.RESPONSE.RESULT[0].RoadCondition;
+    return filterByUserLocation(allConditions, long, lat);
   } catch (err) {
     console.error("Error fetching road conditions: ", err);
     throw err;
   }
-}
+};
+
+export const getAccidents = async (
+  countyNo: number,
+  lat: number,
+  long: number,
+) => {
+  try {
+    const xmlBody = `
+    <REQUEST>
+      <LOGIN authenticationkey="${TRAFIKVERKET_KEY}" />
+      <QUERY objecttype="Situation" namespace="road.trafficinfo" schemaversion="1.6" limit="10">
+        <FILTER>
+          <EQ name="Deviation.CountyNo" value="${countyNo}"/>
+        </FILTER>
+        <INCLUDE>Deviation.AffectedDirection</INCLUDE>
+        <INCLUDE>Deviation.CountyNo</INCLUDE>
+        <INCLUDE>Deviation.Geometry</INCLUDE>
+        <INCLUDE>Deviation.Header</INCLUDE>
+        <INCLUDE>Deviation.IconId</INCLUDE>
+        <INCLUDE>Deviation.Message</INCLUDE>
+        <INCLUDE>Deviation.MessageType</INCLUDE>
+        <INCLUDE>Deviation.MessageTypeValue</INCLUDE>
+        <INCLUDE>Deviation.LocationDescriptor</INCLUDE>
+        <INCLUDE>Deviation.NumberOfLanesRestricted</INCLUDE>
+        <INCLUDE>Deviation.RoadNumber</INCLUDE>
+        <INCLUDE>Deviation.RoadName</INCLUDE>
+        <INCLUDE>Deviation.StartTime</INCLUDE>
+        <INCLUDE>Deviation.SeverityText</INCLUDE>
+        <INCLUDE>Deviation.Suspended</INCLUDE>
+        <INCLUDE>Deviation.TrafficRestrictionType</INCLUDE>
+        <INCLUDE>Deviation.PositionalDescription</INCLUDE>
+      </QUERY>
+    </REQUEST>
+  `;
+
+    const response = await fetch(TRAFIKVERKET_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/xml" },
+      body: xmlBody,
+    });
+
+    const data = await response.json();
+    // console.log("Raw road conditions data: ", data);
+
+    const allConditions = data.RESPONSE.RESULT[0].Situation;
+    // console.log(JSON.stringify(allConditions, null, 2));
+    const allDeviations = allConditions.flatMap((situation: any) => situation.Deviation);
+    // console.log("All deviations: ", allDeviations);
+    return filterDeviationsByLocation(allDeviations, long, lat);
+  } catch (err) {
+    console.error("Error fetching accidents: ", err);
+    throw err;
+  }
+};
