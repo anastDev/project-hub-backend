@@ -12,7 +12,6 @@ import generatorRoutes from "./routes/generator.routes";
 import healthRoutes from "./routes/health.routes";
 
 import { setupSwagger } from "./swagger";
-import e from "express";
 
 const app = express();
 
