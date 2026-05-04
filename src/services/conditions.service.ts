@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import { filterByUserLocation, filterDeviationsByLocation } from "../utils/geoFilter";
 
-
 dotenv.config();
 
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
@@ -91,12 +90,10 @@ export const getAccidents = async (
     });
 
     const data = await response.json();
-    // console.log("Raw road conditions data: ", data);
-
+ 
     const allConditions = data.RESPONSE.RESULT[0].Situation;
-    // console.log(JSON.stringify(allConditions, null, 2));
     const allDeviations = allConditions.flatMap((situation: any) => situation.Deviation);
-    // console.log("All deviations: ", allDeviations);
+
     return filterDeviationsByLocation(allDeviations, long, lat);
   } catch (err) {
     console.error("Error fetching accidents: ", err);
