@@ -32,5 +32,6 @@ const router = Router();
  *         $ref: "#/components/responses/"
  */
 router.post("/:county", conditionsCtrl.conditions);
+router.post("/accidents/:county", conditionsCtrl.accidents);
 
 export default router;
