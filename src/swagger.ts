@@ -35,6 +35,156 @@ const options: swaggerJSDoc.Options = {
       schemas: {
         User: mongooseToSwagger(User),
         Role: mongooseToSwagger(Role),
+        Deviation: {
+          type: "object",
+          properties: {
+            AffectedDirection: {
+              type: "string",
+              example: "Båda riktningarna",
+            },
+            CountyNo: {
+              type: "array",
+              items: {
+                type: "integer",
+                example: [14],
+              },
+            },
+            Geometry: {
+              type: "object",
+              properties: {
+                SWERE99TM: {
+                  type: "string",
+                  example: "POINT (690189 6694314)",
+                },
+                WGS84: {
+                  type: "string",
+                  example: "POINT (18.446 60.340)",
+                },
+              },
+            },
+            Header: {
+              type: "string",
+              example: "Gräsöleden",
+            },
+            IconId: {
+              type: "string",
+              example: "roadWorks",
+            },
+            Message: {
+              type: "string",
+              example: "Vägarbete",
+            },
+            MessageTypeValue: {
+              type: "string",
+              example: "RoadWorks",
+            },
+            LocationDescriptor: {
+              type: "string",
+              example:
+                "Väg 40 mellan trafikplats Landvetter och trafikplats Partille",
+            },
+            NumberOfLanesAffected: {
+              type: "integer",
+              example: 1,
+            },
+            RoadNumber: {
+              type: "string",
+              example: "Väg 40",
+            },
+            RoadName: {
+              type: "string",
+              example: "Landvettervägen",
+            },
+            StartTime: {
+              type: "string",
+              format: "date-time",
+              example: "2026-05-04T08:00:00.000+02:00",
+            },
+            SeverityText: {
+              type: "string",
+              example: "Liten påverkan",
+            },
+            Suspended: {
+              type: "boolean",
+              example: false,
+            },
+            TrafficRestrictionType: {
+              type: "string",
+              example: "Hastighetsnedsättning",
+            },
+            PositionalDescription: {
+              type: "string",
+              example: "Norrgående riktning",
+            },
+          },
+        },
+        RoadCondition: {
+          type: "object",
+          properties: {
+            ID: {
+              type: "string",
+              example: "4125",
+            },
+            ConditionCode: {
+              type: "string",
+              example: "1",
+            },
+            ConditionInfo: {
+              type: "array",
+              items: {
+                type: "string",
+                example: ["Torrt"],
+              },
+            },
+            ConditionText: {
+              type: "string",
+              example: "Normalt",
+            },
+            CountyNo: {
+              type: "array",
+              items: {
+                type: "integer",
+                example: [14],
+              },
+            },
+            LocationText: {
+              type: "string",
+              example: "E 6 Jörlanda - Klarabergsmotet Göteborg",
+            },
+            RoadNumber: {
+              type: "string",
+              example: "E 6",
+            },
+            RoadNumberNumeric: {
+              type: "integer",
+              example: 6,
+            },
+            SafetyRelatedMessage: {
+              type: "boolean",
+              example: false,
+            },
+            StartTime: {
+              type: "string",
+              format: "date-time",
+              example: "2026-05-04T00:00:03.443+02:00",
+            },
+            EndTime: {
+              type: "string",
+              format: "date-time",
+              example: "2026-05-05T00:00:00.000+02:00",
+            },
+            Geometry: {
+              SWEREF99TM: {
+                type: "string",
+                example: "LINESTRING (621665 6918927, 621782 6918841)",
+              },
+              WGS84: {
+                type: "string",
+                example: "LINESTRING (17.352 62.381, 17.354 62.380)",
+              },
+            },
+          },
+        },
         HealthCheck: {
           type: "object",
           required: [
@@ -448,6 +598,14 @@ const options: swaggerJSDoc.Options = {
                     code: "PREV_CODE_REQUIRED",
                   },
                 },
+                invalidParameters: {
+                  summary: "Invalid or missing parameters",
+                  value: {
+                    message:
+                      "Lat and Long parameters are required and must be valid numbers",
+                    code: "INVALID_PARAMETERS",
+                  },
+                },
               },
             },
           },
@@ -523,6 +681,14 @@ const options: swaggerJSDoc.Options = {
                     message: "Role with ID `123` not found",
                     error: "USER_NOT_FOUND",
                     userId: "123",
+                  },
+                },
+                unknownCity: {
+                  summary: "City not found in county mapping",
+                  value: {
+                    message: "Unknown city name",
+                    error: "UNKNOWN_CITY",
+                    cityName: "goth",
                   },
                 },
               },
