@@ -16,12 +16,15 @@ export const conditions = async (
     // console.log(">>Received coordinates:", lat, long);
 
     if (isNaN(lat) || isNaN(long)) {
-    return res.status(400).json({ error: "lat and long must be valid numbers" });
+    return res.status(400).json({ 
+      code: "INVALID_PARAMETERS",
+      error: "Lat and long must be valid numbers" });
 }
 
     const county = getCountyByCity(city);
     if (!county) {
       return res.status(400).json({
+        code: "UNKNOWN_CITY",
         error: `Unknown city: ${city}`,
       });
     }
@@ -47,12 +50,15 @@ export const accidents = async (
     const long = parseFloat(req.body.long);
 
     if (isNaN(lat) || isNaN(long)) {
-    return res.status(400).json({ error: "lat and long must be valid numbers" });
+    return res.status(400).json({ 
+      code: "INVALID_PARAMETERS",
+      error: "Lat and long must be valid numbers" });
 }
 
     const county = getCountyByCity(city);
     if (!county) {
       return res.status(400).json({
+        code: "UNKNOWN_CITY",
         error: `Unknown city: ${city}`,
       });
     }
