@@ -13,8 +13,6 @@ export const conditions = async (
     const lat = parseFloat(req.body.lat);
     const long = parseFloat(req.body.long);
 
-    // console.log(">>Received coordinates:", lat, long);
-
     if (isNaN(lat) || isNaN(long)) {
     return res.status(400).json({ 
       code: "INVALID_PARAMETERS",
@@ -23,13 +21,12 @@ export const conditions = async (
 
     const county = getCountyByCity(city);
     if (!county) {
-      return res.status(400).json({
+      return res.status(404).json({
         code: "UNKNOWN_CITY",
         error: `Unknown city: ${city}`,
       });
     }
     const result = await conditionsService.getRoadConditions(county, lat, long);
-    // console.log("Road conditions result: ", result);
     res.status(200).json(result);
   } catch (err) {
     console.error("Error:", err);
@@ -57,14 +54,13 @@ export const accidents = async (
 
     const county = getCountyByCity(city);
     if (!county) {
-      return res.status(400).json({
+      return res.status(404).json({
         code: "UNKNOWN_CITY",
         error: `Unknown city: ${city}`,
       });
     }
 
     const result = await conditionsService.getAccidents(county, lat, long);
-    //  console.log("Accidents result: ", result);
 
     res.status(200).json(result);
   } catch (err) {

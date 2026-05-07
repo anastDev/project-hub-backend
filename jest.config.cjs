@@ -11,4 +11,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/'],
   // runInBand: true,
   collectCoverage: true,
+  transformIgnorePatterns: [
+    "/node_modules/(?!(@turf|kdbush|supercluster)/)"
+  ]
 };

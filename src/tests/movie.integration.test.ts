@@ -1,6 +1,5 @@
 import { TestServer } from "./testSetup";
 import movieRoutes from "../routes/movie.routes";
-import OmdbMovieResponse from "../models/movie.model";
 import dotenv from "dotenv";
 import { describe } from "node:test";
 dotenv.config();

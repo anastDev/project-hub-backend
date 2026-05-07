@@ -13,7 +13,9 @@ export const getCurrentWeatherByCity = async (
       `${WEATHER_API}weather?q=${city}&units=metric&appid=${WEATHER_API_KEY}`,
     );
 
-    console.log("Response status", result.status);
+    if(result.status === 404) {
+      return null as unknown as WeatherApiResponse;
+    }
 
     if (!result.ok) {
       throw new Error(`Failed to fetch weather ${result.status}`);

@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
-import { filterByUserLocation, filterDeviationsByLocation } from "../utils/geoFilter";
+import {
+  filterByUserLocation,
+  filterDeviationsByLocation,
+} from "../utils/geoFilter";
+import { RoadConditions } from "../models/condition.model";
+import { DeviationConditions } from "../models/deviation.model";
 
 dotenv.config();
 
@@ -39,7 +44,14 @@ export const getRoadConditions = async (
     });
 
     const data = await response.json();
-    // console.log("Raw road conditions data: ", data);
+
+      if (data.status === 404) {
+        return null as unknown as RoadConditions[];
+      }
+
+    if (!data.ok) {
+      throw new Error(`Failed to fetch road conditions: ${data.status}`);
+    }
 
     const allConditions = data.RESPONSE.RESULT[0].RoadCondition;
     return filterByUserLocation(allConditions, long, lat);
@@ -90,9 +102,15 @@ export const getAccidents = async (
     });
 
     const data = await response.json();
- 
+
+    if (data.status === 404) {
+      return null as unknown as DeviationConditions[];
+    }
+
     const allConditions = data.RESPONSE.RESULT[0].Situation;
-    const allDeviations = allConditions.flatMap((situation: any) => situation.Deviation);
+    const allDeviations = allConditions.flatMap(
+      (situation: any) => situation.Deviation,
+    );
 
     return filterDeviationsByLocation(allDeviations, long, lat);
   } catch (err) {
