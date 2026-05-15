@@ -34,7 +34,7 @@ export const explainCode = async (
 ): Promise<string> => {
   try {
     const result = await ai.models.generateContent({
-      model: "models/gemini-3.1-flash-lite-preview",
+      model: "models/gemini-3.1-flash-lite",
       contents: `
       User's question: ${question}
 
