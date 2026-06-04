@@ -28,6 +28,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "wellknown": "^0.5.0",
+    "xml-js": "^1.6.11",
     "zod": "^4.3.5"
   },
   "devDependencies": {

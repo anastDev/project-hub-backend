@@ -11,6 +11,8 @@ dotenv.config();
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
 
+var convert = require("xml-js");
+
 export const getRoadConditions = async (
   countyNo: number,
   lat: number,
@@ -43,14 +45,15 @@ export const getRoadConditions = async (
       body: xmlBody,
     });
 
-    const data = await response.json();
+    const xmlText = await response.text();
+    const data = await convert.xml2json(xmlText, { compact: true, spaces: 4 });
 
-      if (data.status === 404) {
-        return null as unknown as RoadConditions[];
-      }
+    if (data.status === 404) {
+      return null as unknown as RoadConditions[];
+    }
 
-    if (!data.ok) {
-      throw new Error(`Failed to fetch road conditions: ${data.status}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch road conditions: ${response.status}`);
     }
 
     const allConditions = data.RESPONSE.RESULT[0].RoadCondition;
@@ -101,10 +104,15 @@ export const getAccidents = async (
       body: xmlBody,
     });
 
-    const data = await response.json();
+    const xmlText = await response.text();
+    const data = await convert.xml2json(xmlText, { compact: true, spaces: 4 });
 
     if (data.status === 404) {
       return null as unknown as DeviationConditions[];
+    }
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch accidents: ${response.status}`);
     }
 
     const allConditions = data.RESPONSE.RESULT[0].Situation;
