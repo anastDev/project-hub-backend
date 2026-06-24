@@ -5,6 +5,7 @@ import {
 } from "../utils/geoFilter";
 import { RoadConditions } from "../models/condition.model";
 import { DeviationConditions } from "../models/deviation.model";
+import { normalizeGothenburgDeviation } from "../utils/normalizeGothenburgData";
 
 dotenv.config();
 
@@ -142,7 +143,7 @@ export const getAllConditions = async (
     }
 
     const data = await response.json();
-    return data;
+    return data.map(normalizeGothenburgDeviation);
 
   } catch (err) {
     console.error("Error fetching all conditions: ", err);
