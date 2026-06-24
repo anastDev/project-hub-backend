@@ -11,7 +11,6 @@ dotenv.config();
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
 
-
 export const getRoadConditions = async (
   countyNo: number,
   lat: number,
@@ -74,6 +73,7 @@ export const getAccidents = async (
       <QUERY objecttype="Situation" namespace="road.trafficinfo" schemaversion="1.6" limit="10">
         <FILTER>
           <EQ name="Deviation.CountyNo" value="${countyNo}"/>
+          <EQ name="Deviation.MessageType" value="Vägarbete"/>
         </FILTER>
         <INCLUDE>Deviation.AffectedDirection</INCLUDE>
         <INCLUDE>Deviation.CountyNo</INCLUDE>
@@ -92,6 +92,8 @@ export const getAccidents = async (
         <INCLUDE>Deviation.Suspended</INCLUDE>
         <INCLUDE>Deviation.TrafficRestrictionType</INCLUDE>
         <INCLUDE>Deviation.PositionalDescription</INCLUDE>
+        <INCLUDE>Deviation.EndTime</INCLUDE>
+        <INCLUDE>Deviation.TemporaryLimit</INCLUDE>
       </QUERY>
     </REQUEST>
   `;

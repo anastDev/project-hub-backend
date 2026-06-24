@@ -118,6 +118,6 @@ router.post("/:county", conditionsCtrl.conditions);
  *       "500":
  *         $ref: "#/components/responses/InternalServerError"
  */
-router.post("/accidents/:county", conditionsCtrl.accidents);
+router.post("/deviations/:county", conditionsCtrl.accidents);
 
 export default router;
