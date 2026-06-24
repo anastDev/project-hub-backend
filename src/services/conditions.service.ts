@@ -10,6 +10,8 @@ dotenv.config();
 
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
+const TRAFIC_GOTHENBURG_DATA_API = process.env.TRAFIC_GOTHENBURG_DATA_API || "";
+const OPEN_GOTHEBURG_APP_KEY = process.env.OPEN_GOTHEBURG_APP_KEY || "";
 
 export const getRoadConditions = async (
   countyNo: number,
@@ -121,6 +123,29 @@ export const getAccidents = async (
     return filterDeviationsByLocation(allDeviations, long, lat);
   } catch (err) {
     console.error("Error fetching accidents: ", err);
+    throw err;
+  }
+};
+
+export const getAllConditions = async (
+  lat: number,
+  long: number,
+  radius: number,
+) => {
+  try {
+    const response = await fetch(`${TRAFIC_GOTHENBURG_DATA_API}/Situations/${OPEN_GOTHEBURG_APP_KEY}?latitude=${lat}&longitude=${long}&radius=${radius}&format=json`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch all conditions: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (err) {
+    console.error("Error fetching all conditions: ", err);
     throw err;
   }
 };
