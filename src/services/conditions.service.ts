@@ -70,10 +70,9 @@ export const getAccidents = async (
     const xmlBody = `
     <REQUEST>
       <LOGIN authenticationkey="${TRAFIKVERKET_KEY}" />
-      <QUERY objecttype="Situation" namespace="road.trafficinfo" schemaversion="1.6" limit="10">
+      <QUERY objecttype="Situation" namespace="road.trafficinfo" schemaversion="1.6" limit="20">
         <FILTER>
           <EQ name="Deviation.CountyNo" value="${countyNo}"/>
-          <EQ name="Deviation.MessageType" value="Vägarbete"/>
         </FILTER>
         <INCLUDE>Deviation.AffectedDirection</INCLUDE>
         <INCLUDE>Deviation.CountyNo</INCLUDE>
