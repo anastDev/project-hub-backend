@@ -8,14 +8,14 @@ export const conditions = async (
   next: NextFunction,
 ) => {
   try {
-     const city = req.params.county as string;
+    const city = req.params.county as string;
     const lat = parseFloat(req.body.lat);
     const lng = parseFloat(req.body.lng);
 
     if (isNaN(lat) || isNaN(lng)) {
       return res.status(400).json({
         code: "INVALID_PARAMETERS",
-        error: "Lat and long must be valid numbers"
+        error: "Lat and long must be valid numbers",
       });
     }
 
@@ -23,16 +23,11 @@ export const conditions = async (
     if (!county) {
       return res.status(404).json({
         code: "UNKNOWN_CITY",
-        error: `Unknown city: ${city}`
+        error: `Unknown city: ${city}`,
       });
     }
 
-    const isGothenburg = city.toLowerCase() === "gothenburg" || 
-                         city.toLowerCase() === "göteborg";
-
-    const result = isGothenburg
-      ? await conditionsService.getAllConditions(lat, lng, 2000)
-      : await conditionsService.getRoadConditions(county, lat, lng);
+    const result = await conditionsService.getRoadConditions(county, lat, lng);
 
     res.status(200).json(result);
   } catch (err) {
@@ -40,7 +35,6 @@ export const conditions = async (
     next(err);
   }
 };
-
 
 export const accidents = async (
   req: Request,
@@ -51,13 +45,14 @@ export const accidents = async (
     const city = req.params.county as string;
 
     const lat = parseFloat(req.body.lat);
-    const long = parseFloat(req.body.long);
+    const lng = parseFloat(req.body.long);
 
-    if (isNaN(lat) || isNaN(long)) {
-    return res.status(400).json({ 
-      code: "INVALID_PARAMETERS",
-      error: "Lat and long must be valid numbers" });
-}
+    if (isNaN(lat) || isNaN(lng)) {
+      return res.status(400).json({
+        code: "INVALID_PARAMETERS",
+        error: "Lat and long must be valid numbers",
+      });
+    }
 
     const county = getCountyByCity(city);
     if (!county) {
@@ -67,7 +62,12 @@ export const accidents = async (
       });
     }
 
-    const result = await conditionsService.getAccidents(county, lat, long);
+    const isGothenburg =
+      city.toLowerCase() === "gothenburg" || city.toLowerCase() === "göteborg";
+
+    const result = isGothenburg
+      ? await conditionsService.getAllConditions(lat, lng, 3500)
+      : await conditionsService.getAccidents(county, lat, lng);
 
     res.status(200).json(result);
   } catch (err) {
@@ -75,4 +75,3 @@ export const accidents = async (
     next(err);
   }
 };
-

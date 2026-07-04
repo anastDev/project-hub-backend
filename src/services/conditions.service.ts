@@ -11,7 +11,7 @@ dotenv.config();
 
 const TRAFIKVERKET_URL = process.env.TRAFIKVERKET_URL || "";
 const TRAFIKVERKET_KEY = process.env.TRAFIKVERKET_KEY || "";
-const TRAFIC_GOTHENBURG_DATA_API = process.env.TRAFIC_GOTHENBURG_DATA_API || "";
+const TRAFFIC_GOTHENBURG_DATA_API = process.env.TRAFFIC_GOTHENBURG_DATA_API || "";
 const OPEN_GOTHEBURG_APP_KEY = process.env.OPEN_GOTHEBURG_APP_KEY || "";
 
 export const getRoadConditions = async (
@@ -134,7 +134,7 @@ export const getAllConditions = async (
   radius: number,
 ) => {
   try {
-    const response = await fetch(`${TRAFIC_GOTHENBURG_DATA_API}/Situations/${OPEN_GOTHEBURG_APP_KEY}?latitude=${lat}&longitude=${long}&radius=${radius}&format=json`, {
+    const response = await fetch(`${TRAFFIC_GOTHENBURG_DATA_API}/Situations/${OPEN_GOTHEBURG_APP_KEY}?latitude=${lat}&longitude=${long}&radius=${radius}&format=json`, {
       method: "GET",
     });
 
