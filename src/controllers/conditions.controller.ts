@@ -45,12 +45,12 @@ export const accidents = async (
     const city = req.params.county as string;
 
     const lat = parseFloat(req.body.lat);
-    const lng = parseFloat(req.body.long);
+    const lng = parseFloat(req.body.lng);
 
     if (isNaN(lat) || isNaN(lng)) {
       return res.status(400).json({
         code: "INVALID_PARAMETERS",
-        error: "Lat and long must be valid numbers",
+        error: "Lat and lng must be valid numbers",
       });
     }
 
@@ -71,7 +71,7 @@ export const accidents = async (
 
     res.status(200).json(result);
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Error: ", err);
     next(err);
   }
 };
